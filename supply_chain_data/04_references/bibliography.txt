@@ -1,0 +1,98 @@
+SUPPLY CHAIN GEOSPATIAL PROJECT — ANNOTATED BIBLIOGRAPHY
+Northeastern University
+Generated: 2026-05-14 17:47:45
+======================================================================
+
+
+TIER 1 — Directly Matches Project (Geospatial + Freight + Vulnerability)
+----------------------------------------------------------------------
+
+[1] Dynamic Disruption Resilience in Intermodal Transport Networks: Integrating Flow Weighting and Centrality Measures
+    Year   : 2025
+    Source : arXiv
+    URL    : https://arxiv.org/pdf/2601.00906
+    File   : T1_01_intermodal_disruption_resilience.pdf  [DOWNLOADED]
+    Notes  : Closest existing study — same U.S. intermodal network, same disruption framing. Uses simulation; your project uses real 2022 CFS data.
+
+[2] Investigating Resiliency of Transportation Network Under Targeted and Potential Climate Change Disruptions
+    Year   : 2025
+    Source : arXiv
+    URL    : https://arxiv.org/pdf/2506.19102
+    File   : T1_02_transport_network_climate_disruptions.pdf  [DOWNLOADED]
+    Notes  : Rail/water network disruption simulation with DoE Volpe data. Complementary to your mode-concentration vulnerability angle.
+
+[3] Modeling the Resilience of Multimodal Freight Corridors under Disruptions: A Systematic Review
+    Year   : 2024
+    Source : ResearchGate
+    URL    : https://www.researchgate.net/publication/383867100
+    File   : T1_03_multimodal_freight_resilience_review.html  [CITATION ONLY]
+    Notes  : Systematic review — gold mine of references. Francis Scott Key Bridge collapse: freight down 25%, truck delays 2–4x longer.
+    Error  : HTTP 403: Forbidden — save citation only
+
+[4] Supply Chain Exposure to Geographic Concentration Risk: In View of Engagement Frequency
+    Year   : 2024
+    Source : Institute of Developing Economies (IDE-JETRO)
+    URL    : https://www.ide.go.jp/English/ResearchColumns/Columns/2024/inomata_satoshi.html
+    File   : T1_04_geographic_concentration_risk.html  [DOWNLOADED]
+    Notes  : Directly addresses geographic concentration risk — core of your project. Global scope; yours adds domestic U.S. geospatial precision.
+
+
+TIER 2 — Closely Related (Supply Chain Disruption + Infrastructure)
+----------------------------------------------------------------------
+
+[5] Risk Analysis of Supply Chains: The Role of Supporting Structures and Infrastructure
+    Year   : 2024
+    Source : Transportation Research Part E (ScienceDirect)
+    URL    : https://www.sciencedirect.com/science/article/pii/S1366554524000073
+    File   : T2_05_supply_chain_infrastructure_risk.html  [CITATION ONLY]
+    Notes  : Models physical infrastructure dependency in supply chains. Supports your argument for mode diversification as solution.
+    Error  : HTTP 403: Forbidden — save citation only
+
+[6] Supply Chain Disruptions and Resilience: A Major Review and Future Research Agenda
+    Year   : 2021
+    Source : PMC / Annals of Operations Research
+    URL    : https://pmc.ncbi.nlm.nih.gov/articles/PMC7792559/
+    File   : T2_06_supply_chain_disruptions_major_review.html  [DOWNLOADED]
+    Notes  : Foundational 20-year review. Cite in your Problem and Question components to establish the problem's long history.
+
+[7] Resilience Framework for Ports and Other Intermodal Components (GIS-Based Vulnerability Assessment)
+    Year   : 2023
+    Source : Transportation Science / ResearchGate
+    URL    : https://www.researchgate.net/publication/370456789
+    File   : T2_07_port_resilience_gis_framework.html  [CITATION ONLY]
+    Notes  : Establishes GIS as a valid methodological tool for freight vulnerability analysis — legitimizes your geospatial approach.
+    Error  : HTTP 403: Forbidden — save citation only
+
+
+TIER 3 — Industry Reports & Problem Magnitude Evidence
+----------------------------------------------------------------------
+
+[8] Supply Chain Disruptions 2024: A Comprehensive Year in Review
+    Year   : 2024
+    Source : Seavantage
+    URL    : https://www.seavantage.com/blog/global-ocean-shipping-in-2025
+    File   : T3_08_supply_chain_disruptions_2024_review.html  [DOWNLOADED]
+    Notes  : Francis Scott Key Bridge: 6–8hr truck delays, $12M/week logistics cost increase, 25% freight decline. Perfect Problem section example.
+
+[9] Supply Chain Mapping (Geographic Concentration Case Study)
+    Year   : 2026
+    Source : ImpactBuying
+    URL    : https://www.impactbuying.com/supply-chain-mapping
+    File   : T3_09_supply_chain_mapping_case_study.html  [DOWNLOADED]
+    Notes  : Electronics company: 78% spend in 3 Chinese provinces. Geospatial mapping reduced concentration to <50% by 2025. Concrete business case for your project's proposed approach.
+
+[10] State of Logistics Report 2025
+    Year   : 2025
+    Source : CSCMP / Kearney via The Supply Chain Xchange
+    URL    : https://cscmp.org/CSCMP/Educate/SCM_Definitions_and_Glossary_of_Terms.aspx
+    File   : T3_10_state_of_logistics_2025.html  [DOWNLOADED]
+    Notes  : U.S. logistics costs rose 5.4% to $2.58T (8.8% of GDP) in 2024. Quantifies problem magnitude for your Problem component.
+
+======================================================================
+KEY RESEARCH GAP (for your Question/So What section):
+
+Existing studies use simulation models or global trade data.
+None use the 2022 CFS geospatial subarea data (released June 2025).
+None combine CFS + TIGER/Line + NTAD to map domestic U.S. freight
+mode concentration at the subarea level.
+=> Your project is both original and timely.

@@ -1,0 +1,35 @@
+Supply Chain Geospatial Data Inventory
+Generated: 2026-05-14 16:59:27
+SCHM 6201 — Operations and Supply Chain Management
+=================================================================
+
+[PASS] CFS Freight by CFS Area (all states, all commodities)
+       File   : cfs_freight_area.csv
+       Result : 94,023 rows  |  13989.9 KB
+       Note   : Shipment value + tonnage by CFS Area and commodity — primary analysis layer
+
+[PASS] CFS Export Shipments (by state)
+       File   : cfs_exports.csv
+       Result : 102 rows  |  5.7 KB
+       Note   : Export freight flows by origin state and commodity type
+
+[PASS] CFS Hazardous Materials Shipments
+       File   : cfs_hazmat.csv
+       Result : 48 rows  |  3.6 KB
+       Note   : Hazmat freight — identifies high-risk corridors requiring specialized routing
+
+[PASS] CFS Temperature-Controlled Shipments
+       File   : cfs_temp_controlled.csv
+       Result : 308 rows  |  27.5 KB
+       Note   : Cold-chain freight — identifies food/pharma supply chain vulnerability
+
+[PASS] TIGER/Line 2022 US County Boundaries
+       File   : tl_2022_us_county.zip
+       Result : Extracted to 02_shapefiles\county  |  shapefile: tl_2022_us_county.shp
+       Note   : Base map layer — join to CFS data via GEOID
+
+[PASS] CFS 2022 Areas Shapefile
+       File   : cfs_2022_cfsarea.zip
+       Result : Extracted to 02_shapefiles\cfs_areas  |  shapefile: 2022_CFS_Areas.shp
+       Note   : 134 freight zones — geographic unit for CFS API data
+

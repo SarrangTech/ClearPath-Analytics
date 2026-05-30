@@ -1,0 +1,309 @@
+NAME,GEO_ID,COMM,COMM_LABEL,VAL,TON,us
+United States,0100000US,0000,All Commodities,1922133,804713,1
+United States,0100000US,0000,All Commodities,2992166,1237954,1
+United States,0100000US,01,Animals and fish (live),2394,404,1
+United States,0100000US,01,Animals and fish (live),0,0,1
+United States,0100000US,010,Live animals and live fish,2394,404,1
+United States,0100000US,010,Live animals and live fish,0,0,1
+United States,0100000US,02,Cereal grains (includes seed),0,0,1
+United States,0100000US,02,Cereal grains (includes seed),2966,10540,1
+United States,0100000US,021,Wheat,0,0,1
+United States,0100000US,022,Corn (excludes sweet),0,0,1
+United States,0100000US,022,Corn (excludes sweet),1252,4946,1
+United States,0100000US,029,Other cereal grains,0,0,1
+United States,0100000US,029,Other cereal grains,0,0,1
+United States,0100000US,03,"Agricultural products (excludes animal feed, cereal grains, and forage products)",105222,65869,1
+United States,0100000US,03,"Agricultural products (excludes animal feed, cereal grains, and forage products)",134793,68730,1
+United States,0100000US,031,Fresh or chilled potatoes (excludes sweet),8505,7838,1
+United States,0100000US,031,Fresh or chilled potatoes (excludes sweet),12373,13549,1
+United States,0100000US,032,"Fresh or chilled edible vegetables (excludes potatoes), and dried vegetables",38973,25652,1
+United States,0100000US,032,"Fresh or chilled edible vegetables (excludes potatoes), and dried vegetables",60642,32162,1
+United States,0100000US,033,"Fruit and nuts, edible, fresh, chilled, or dried",47026,29084,1
+United States,0100000US,033,"Fruit and nuts, edible, fresh, chilled, or dried",45854,18225,1
+United States,0100000US,034,Soy beans,490,1561,1
+United States,0100000US,034,Soy beans,1572,2761,1
+United States,0100000US,035,Oil seeds and nuts (excludes olives and soy beans),145,59,1
+United States,0100000US,035,Oil seeds and nuts (excludes olives and soy beans),0,0,1
+United States,0100000US,036,"Bulbs, live plants, and seeds for sowing, not elsewhere classified",0,382,1
+United States,0100000US,036,"Bulbs, live plants, and seeds for sowing, not elsewhere classified",2889,1106,1
+United States,0100000US,039,"Fresh-cut flowers, plants, and parts of plants, and other agricultural products",5972,1294,1
+United States,0100000US,039,"Fresh-cut flowers, plants, and parts of plants, and other agricultural products",11441,923,1
+United States,0100000US,04,"Animal feed, eggs, honey, and other products of animal origin",14157,8481,1
+United States,0100000US,04,"Animal feed, eggs, honey, and other products of animal origin",19281,0,1
+United States,0100000US,041,"Eggs, cereal straw or husks, forage products, residues and waste from the food industries used in animal feeding, other products of animal origin, not elsewhere classified",11940,5143,1
+United States,0100000US,041,"Eggs, cereal straw or husks, forage products, residues and waste from the food industries used in animal feeding, other products of animal origin, not elsewhere classified",7450,4241,1
+United States,0100000US,042,Animal feed preparations,2218,0,1
+United States,0100000US,042,Animal feed preparations,0,0,1
+United States,0100000US,05,"Meat, poultry, fish, seafood, and their preparations",344343,92145,1
+United States,0100000US,05,"Meat, poultry, fish, seafood, and their preparations",504927,119222,1
+United States,0100000US,051,"Meat and poultry, fresh, chilled, or frozen, meat in brine, dried or smoked",286504,83749,1
+United States,0100000US,051,"Meat and poultry, fresh, chilled, or frozen, meat in brine, dried or smoked",454720,114196,1
+United States,0100000US,052,"Fish (excludes live), seafood, and their preparations",55890,7787,1
+United States,0100000US,052,"Fish (excludes live), seafood, and their preparations",50028,4992,1
+United States,0100000US,053,"Preparations, extracts, and juices of meat, fish, or seafood",1949,610,1
+United States,0100000US,053,"Preparations, extracts, and juices of meat, fish, or seafood",0,0,1
+United States,0100000US,06,"Milled grain products and preparations, and bakery products",49767,23242,1
+United States,0100000US,06,"Milled grain products and preparations, and bakery products",113992,38841,1
+United States,0100000US,061,"Wheat flour, groats, and meal",1018,404,1
+United States,0100000US,061,"Wheat flour, groats, and meal",2230,927,1
+United States,0100000US,062,"Malt, milled rice and corn (broken, flour, groats, and meal, inulin, wheat gluten, milled cereals and other vegetables and grains)",807,1237,1
+United States,0100000US,062,"Malt, milled rice and corn (broken, flour, groats, and meal, inulin, wheat gluten, milled cereals and other vegetables and grains)",0,0,1
+United States,0100000US,063,"Bakery products and food preparations of cereals, flour, starch or milk",11483,5934,1
+United States,0100000US,063,"Bakery products and food preparations of cereals, flour, starch or milk",26451,11853,1
+United States,0100000US,064,Bakery products (includes frozen),36459,15667,1
+United States,0100000US,064,Bakery products (includes frozen),83726,25428,1
+United States,0100000US,07,Other prepared foodstuffs and fats and oils,246159,135342,1
+United States,0100000US,07,Other prepared foodstuffs and fats and oils,489428,399296,1
+United States,0100000US,071,Dairy products (excludes beverages and preparations of milk),142864,73144,1
+United States,0100000US,071,Dairy products (excludes beverages and preparations of milk),229527,98246,1
+United States,0100000US,072,"Processed or prepared vegetables, fruit, or nuts (excludes dried or milled, and juices)",31996,21231,1
+United States,0100000US,072,"Processed or prepared vegetables, fruit, or nuts (excludes dried or milled, and juices)",73999,36792,1
+United States,0100000US,073,"Coffee, tea, and spices (excludes unprocessed coffee and unfermented tea)",1664,985,1
+United States,0100000US,073,"Coffee, tea, and spices (excludes unprocessed coffee and unfermented tea)",3699,1235,1
+United States,0100000US,074,"Animal or vegetable fats and oils and their cleavage products, prepared",8216,7085,1
+United States,0100000US,074,"Animal or vegetable fats and oils and their cleavage products, prepared",16872,8858,1
+United States,0100000US,075,"Sugars confectionery, solid or syrups (excludes added flavoring or coloring)",640,930,1
+United States,0100000US,075,"Sugars confectionery, solid or syrups (excludes added flavoring or coloring)",6154,0,1
+United States,0100000US,076,"Confectionery, cocoa, and cocoa preparations",25043,6191,1
+United States,0100000US,076,"Confectionery, cocoa, and cocoa preparations",35964,7114,1
+United States,0100000US,077,"Edible preparations, not elsewhere classified, and vinegar",21133,9082,1
+United States,0100000US,077,"Edible preparations, not elsewhere classified, and vinegar",30687,8057,1
+United States,0100000US,078,"Nonalcoholic beverages, not elsewhere classified, and ice",14603,16694,1
+United States,0100000US,078,"Nonalcoholic beverages, not elsewhere classified, and ice",92526,221822,1
+United States,0100000US,08,Alcoholic beverages,33460,13107,1
+United States,0100000US,08,Alcoholic beverages,270037,119981,1
+United States,0100000US,081,Malt beer,16303,10004,1
+United States,0100000US,081,Malt beer,137533,86166,1
+United States,0100000US,082,Wine and other fermented beverages,13739,2420,1
+United States,0100000US,082,Wine and other fermented beverages,60501,16285,1
+United States,0100000US,083,Spirituous beverages and ethyl alcohol,3329,583,1
+United States,0100000US,083,Spirituous beverages and ethyl alcohol,71199,16617,1
+United States,0100000US,084,"Denatured ethyl alcohol, not for ingestion or use as biofuel",0,0,1
+United States,0100000US,084,"Denatured ethyl alcohol, not for ingestion or use as biofuel",805,0,1
+United States,0100000US,09,Tobacco products,2043,79,1
+United States,0100000US,09,Tobacco products,5513,152,1
+United States,0100000US,090,Tobacco products,2043,79,1
+United States,0100000US,090,Tobacco products,5513,152,1
+United States,0100000US,11,Natural sands,0,460,1
+United States,0100000US,11,Natural sands,0,0,1
+United States,0100000US,110,Natural sands (excludes metal-bearing),0,460,1
+United States,0100000US,110,Natural sands (excludes metal-bearing),0,0,1
+United States,0100000US,12,Gravel and crushed stone (excludes dolomite and slate),1,0,1
+United States,0100000US,12,Gravel and crushed stone (excludes dolomite and slate),0,0,1
+United States,0100000US,120,Gravel and crushed stone (excludes dolomite and slate),1,0,1
+United States,0100000US,120,Gravel and crushed stone (excludes dolomite and slate),0,0,1
+United States,0100000US,13,"Other non-metallic minerals, not elsewhere classified",47,1242,1
+United States,0100000US,13,"Other non-metallic minerals, not elsewhere classified",0,15,1
+United States,0100000US,131,Salt,0,9,1
+United States,0100000US,131,Salt,0,15,1
+United States,0100000US,139,"Other non-metallic minerals, not elsewhere classified",37,1234,1
+United States,0100000US,14,Metallic ores and concentrates,423,0,1
+United States,0100000US,149,Metallic ores and concentrates (excludes iron),423,0,1
+United States,0100000US,17,Gasoline and aviation turbine fuel,4648,9282,1
+United States,0100000US,17,Gasoline and aviation turbine fuel,17396,20304,1
+United States,0100000US,171,Gasoline,0,8,1
+United States,0100000US,171,Gasoline,12007,12510,1
+United States,0100000US,172,Aviation turbine fuel (types A and B),1155,2541,1
+United States,0100000US,172,Aviation turbine fuel (types A and B),435,469,1
+United States,0100000US,175,"Ethanol, ethanol blends of more than 10 percent ethanol, and other fuel alcohols",1797,3450,1
+United States,0100000US,175,"Ethanol, ethanol blends of more than 10 percent ethanol, and other fuel alcohols",0,0,1
+United States,0100000US,176,"Ethanol, for use as biofuels",1678,3283,1
+United States,0100000US,176,"Ethanol, for use as biofuels",4798,7002,1
+United States,0100000US,18,Fuel oils,7104,12177,1
+United States,0100000US,18,Fuel oils,22741,27511,1
+United States,0100000US,181,Fuel oils,0,0,1
+United States,0100000US,181,Fuel oils,18390,20654,1
+United States,0100000US,182,"Blends of fuel oils and biofuel, biodiesel",4399,6346,1
+United States,0100000US,182,"Blends of fuel oils and biofuel, biodiesel",4351,6857,1
+United States,0100000US,19,"Other coal and petroleum products, not elsewhere classified",29008,113232,1
+United States,0100000US,19,"Other coal and petroleum products, not elsewhere classified",29473,64359,1
+United States,0100000US,191,Lubricating oils and greases,499,332,1
+United States,0100000US,191,Lubricating oils and greases,3589,10317,1
+United States,0100000US,192,"Refined petroleum oils and oils obtained from bituminous minerals, not elsewhere classified",701,1517,1
+United States,0100000US,192,"Refined petroleum oils and oils obtained from bituminous minerals, not elsewhere classified",1162,1391,1
+United States,0100000US,193,Gaseous hydrocarbons,2077,3774,1
+United States,0100000US,193,Gaseous hydrocarbons,8566,11825,1
+United States,0100000US,199,"Other products of petroleum refining, and coal products, not elsewhere classified",25731,107608,1
+United States,0100000US,199,"Other products of petroleum refining, and coal products, not elsewhere classified",16156,40826,1
+United States,0100000US,20,Basic chemicals,30724,84894,1
+United States,0100000US,20,Basic chemicals,24196,63951,1
+United States,0100000US,201,Sodium hydroxide (caustic soda) and potassium hydroxide (caustic potash),629,1387,1
+United States,0100000US,201,Sodium hydroxide (caustic soda) and potassium hydroxide (caustic potash),227,526,1
+United States,0100000US,202,"Inorganic chemicals, not elsewhere classified",10657,71322,1
+United States,0100000US,202,"Inorganic chemicals, not elsewhere classified",13193,57290,1
+United States,0100000US,203,Cyclic hydrocarbons,3202,3612,1
+United States,0100000US,203,Cyclic hydrocarbons,0,0,1
+United States,0100000US,204,"Phenols, phenol-alcohols, aldehydes, cyclic polymers of aldehydes, and acyclic alcohols, and organic acids",3696,2906,1
+United States,0100000US,204,"Phenols, phenol-alcohols, aldehydes, cyclic polymers of aldehydes, and acyclic alcohols, and organic acids",467,167,1
+United States,0100000US,205,"Organic chemicals, not elsewhere classified",12540,5667,1
+United States,0100000US,205,"Organic chemicals, not elsewhere classified",9766,4108,1
+United States,0100000US,21,Pharmaceutical products,425602,3974,1
+United States,0100000US,21,Pharmaceutical products,416794,3819,1
+United States,0100000US,210,Pharmaceutical products,425602,3974,1
+United States,0100000US,210,Pharmaceutical products,416794,3819,1
+United States,0100000US,22,Fertilizers,6292,23939,1
+United States,0100000US,22,Fertilizers,16192,30255,1
+United States,0100000US,220,Fertilizers and fertilizer materials,6292,23939,1
+United States,0100000US,220,Fertilizers and fertilizer materials,16192,30255,1
+United States,0100000US,23,"Other chemical products and preparations, not elsewhere classified",32366,10626,1
+United States,0100000US,23,"Other chemical products and preparations, not elsewhere classified",28582,0,1
+United States,0100000US,231,"Paints and varnishes, enamels, tanning or dyeing extracts, tannins and their derivatives, inks, lakes, toners, and ink",9061,2415,1
+United States,0100000US,231,"Paints and varnishes, enamels, tanning or dyeing extracts, tannins and their derivatives, inks, lakes, toners, and ink",6220,1523,1
+United States,0100000US,232,"Essential oils and resinoids, and perfumery, cosmetic, or toilet preparations",6493,848,1
+United States,0100000US,232,"Essential oils and resinoids, and perfumery, cosmetic, or toilet preparations",2324,486,1
+United States,0100000US,233,"Soap, organic surface-active agents, cleaning preparations, polishes and creams, and scouring preps",2478,1279,1
+United States,0100000US,233,"Soap, organic surface-active agents, cleaning preparations, polishes and creams, and scouring preps",4332,1914,1
+United States,0100000US,234,"Photographic film, plates, paper, paperboard, or textiles, and chemical preps for photographic use",2997,349,1
+United States,0100000US,234,"Photographic film, plates, paper, paperboard, or textiles, and chemical preps for photographic use",1461,183,1
+United States,0100000US,235,"Insecticides, rodenticides, fungicides, herbicides, disinfectants, etc.",1050,167,1
+United States,0100000US,235,"Insecticides, rodenticides, fungicides, herbicides, disinfectants, etc.",3705,0,1
+United States,0100000US,239,"Other chemical products and preparations, glues, prepared explosives, activated natural mineral products, anti-knock preparations, etc.",10286,5568,1
+United States,0100000US,239,"Other chemical products and preparations, glues, prepared explosives, activated natural mineral products, anti-knock preparations, etc.",10541,0,1
+United States,0100000US,24,Plastics and rubber,3328,1135,1
+United States,0100000US,24,Plastics and rubber,0,0,1
+United States,0100000US,241,Plastics and rubber in primary forms or sheets,340,178,1
+United States,0100000US,241,Plastics and rubber in primary forms or sheets,0,0,1
+United States,0100000US,242,Manmade fibers and plastics basic shapes and articles,2839,935,1
+United States,0100000US,242,Manmade fibers and plastics basic shapes and articles,164,46,1
+United States,0100000US,243,Rubber articles,149,0,1
+United States,0100000US,243,Rubber articles,0,0,1
+United States,0100000US,25,Logs and other wood in the rough,0,7,1
+United States,0100000US,250,Logs and other wood in the rough,0,7,1
+United States,0100000US,26,Wood products,207,0,1
+United States,0100000US,26,Wood products,0,0,1
+United States,0100000US,261,Wood chips or particles,0,0,1
+United States,0100000US,262,"Lumber, wood continuously shaped along any of its edges or faces, shingles and shakes",0,0,1
+United States,0100000US,262,"Lumber, wood continuously shaped along any of its edges or faces, shingles and shakes",0,0,1
+United States,0100000US,263,"Veneer sheets and sheets for plywood, particle board, fiberboard, plywood, and similar laminated wood",0,0,1
+United States,0100000US,264,"Windows, doors, thresholds, and builders' joinery and carpentry of wood (excludes shingles and shakes)",0,0,1
+United States,0100000US,264,"Windows, doors, thresholds, and builders' joinery and carpentry of wood (excludes shingles and shakes)",0,2,1
+United States,0100000US,269,Other wood products,0,0,1
+United States,0100000US,269,Other wood products,0,0,1
+United States,0100000US,27,"Pulp, newsprint, paper, and paperboard",160,0,1
+United States,0100000US,27,"Pulp, newsprint, paper, and paperboard",14,0,1
+United States,0100000US,271,Pulp of fibrous cellulosic materials,0,0,1
+United States,0100000US,272,Newsprint in large rolls or sheets,0,0,1
+United States,0100000US,273,"Uncoated paper, tissue, and paperboard in large rolls or sheets",100,0,1
+United States,0100000US,273,"Uncoated paper, tissue, and paperboard in large rolls or sheets",8,1,1
+United States,0100000US,274,"Coated, impregnated, treated, or worked paper and paperboard, in large rolls or sheets",53,0,1
+United States,0100000US,274,"Coated, impregnated, treated, or worked paper and paperboard, in large rolls or sheets",0,0,1
+United States,0100000US,28,Paper or paperboard articles,171,216,1
+United States,0100000US,28,Paper or paperboard articles,128,86,1
+United States,0100000US,280,Paper or paperboard articles,171,216,1
+United States,0100000US,280,Paper or paperboard articles,128,86,1
+United States,0100000US,29,Printed products,607,55,1
+United States,0100000US,29,Printed products,0,0,1
+United States,0100000US,291,"Printed books, brochures, leaflets, and similar printed products",0,0,1
+United States,0100000US,291,"Printed books, brochures, leaflets, and similar printed products",0,0,1
+United States,0100000US,292,"Newspapers, journals, and periodicals",0,0,1
+United States,0100000US,293,"Advertising material, commercial or trade catalogues, and similar printed products",66,16,1
+United States,0100000US,299,Other printed products,348,22,1
+United States,0100000US,299,Other printed products,0,0,1
+United States,0100000US,30,"Textiles, leather, and articles of textiles or leather",394,35,1
+United States,0100000US,30,"Textiles, leather, and articles of textiles or leather",0,0,1
+United States,0100000US,301,"Textile fibers, yarns, and broad woven or knitted fabrics",0,0,1
+United States,0100000US,302,"Textile clothing and accessories, and headgear (excludes safety)",0,0,1
+United States,0100000US,303,"Textiles and textile articles, not elsewhere classified",54,0,1
+United States,0100000US,303,"Textiles and textile articles, not elsewhere classified",0,10,1
+United States,0100000US,304,Leather footwear,48,0,1
+United States,0100000US,304,Leather footwear,0,0,1
+United States,0100000US,305,"Leather and articles of leather or allied materials, and dressed fur skins",30,9,1
+United States,0100000US,31,Non-metallic mineral products,1057,4961,1
+United States,0100000US,31,Non-metallic mineral products,0,126,1
+United States,0100000US,311,Hydraulic cements,369,4519,1
+United States,0100000US,312,Ceramic products,88,24,1
+United States,0100000US,312,Ceramic products,0,0,1
+United States,0100000US,313,Glass and glass products,499,86,1
+United States,0100000US,313,Glass and glass products,0,0,1
+United States,0100000US,319,Other non-metallic mineral products,101,0,1
+United States,0100000US,319,Other non-metallic mineral products,0,126,1
+United States,0100000US,32,Base metal in primary or semi-finished forms and in finished basic shapes,822,303,1
+United States,0100000US,32,Base metal in primary or semi-finished forms and in finished basic shapes,59,23,1
+United States,0100000US,321,"Ferro-alloys, and iron and steel in primary or semi-finished forms, or in powders or granules",0,0,1
+United States,0100000US,322,Flat-rolled products of iron or steel,207,120,1
+United States,0100000US,322,Flat-rolled products of iron or steel,0,0,1
+United States,0100000US,323,"Bars, rods, angles, shapes, sections, and wire, of iron or steel",0,34,1
+United States,0100000US,323,"Bars, rods, angles, shapes, sections, and wire, of iron or steel",0,0,1
+United States,0100000US,324,"Nonferrous metal (excludes precious, unwrought, or in finished basic shapes, or in powders or granules)",349,121,1
+United States,0100000US,324,"Nonferrous metal (excludes precious, unwrought, or in finished basic shapes, or in powders or granules)",56,23,1
+United States,0100000US,33,Articles of base metal,453,59,1
+United States,0100000US,33,Articles of base metal,0,0,1
+United States,0100000US,331,"Pipes, tubes, and fittings",130,0,1
+United States,0100000US,331,"Pipes, tubes, and fittings",0,0,1
+United States,0100000US,332,Structures and parts (excludes prefabricated buildings),0,0,1
+United States,0100000US,332,Structures and parts (excludes prefabricated buildings),0,0,1
+United States,0100000US,333,"Hand tools, cutlery (excludes precious metals, interchangeable tools for hand or machine tools, hardware, and industrial fasteners)",16,4,1
+United States,0100000US,333,"Hand tools, cutlery (excludes precious metals, interchangeable tools for hand or machine tools, hardware, and industrial fasteners)",0,0,1
+United States,0100000US,339,Other articles of metal,0,45,1
+United States,0100000US,339,Other articles of metal,0,0,1
+United States,0100000US,34,Machinery,2597,149,1
+United States,0100000US,34,Machinery,0,0,1
+United States,0100000US,341,Internal-combustion engines and parts,0,0,1
+United States,0100000US,342,"Turbines, boilers, nuclear reactors, and nonelectric engines and motors (excludes internal-combustion)",502,0,1
+United States,0100000US,342,"Turbines, boilers, nuclear reactors, and nonelectric engines and motors (excludes internal-combustion)",0,0,1
+United States,0100000US,343,"Pumps, compressors, fans, and ventilating or recycling hoods incorporating a fan",0,0,1
+United States,0100000US,343,"Pumps, compressors, fans, and ventilating or recycling hoods incorporating a fan",0,0,1
+United States,0100000US,344,"Air-conditioning, refrigerating, or freezing equipment",98,0,1
+United States,0100000US,344,"Air-conditioning, refrigerating, or freezing equipment",0,0,1
+United States,0100000US,345,"Materials-handling, excavating, boring, and related machinery and equipment",0,0,1
+United States,0100000US,345,"Materials-handling, excavating, boring, and related machinery and equipment",0,0,1
+United States,0100000US,349,"Other mechanical machinery, not elsewhere classified",768,0,1
+United States,0100000US,349,"Other mechanical machinery, not elsewhere classified",0,0,1
+United States,0100000US,35,"Electronic and other electrical equipment and components, and office equipment",1526,82,1
+United States,0100000US,35,"Electronic and other electrical equipment and components, and office equipment",20377,3808,1
+United States,0100000US,351,"Electric motors, generators, rotary or static converters, and transformers",0,0,1
+United States,0100000US,351,"Electric motors, generators, rotary or static converters, and transformers",285,0,1
+United States,0100000US,352,"Electric cooking appliances, electro-thermic, or electro-mechanical domestic appliances",101,6,1
+United States,0100000US,352,"Electric cooking appliances, electro-thermic, or electro-mechanical domestic appliances",69,0,1
+United States,0100000US,353,Line telephone or telegraph apparatus,0,0,1
+United States,0100000US,353,Line telephone or telegraph apparatus,6,0,1
+United States,0100000US,354,Electronic entertainment products (excludes parts),0,0,1
+United States,0100000US,354,Electronic entertainment products (excludes parts),9657,3081,1
+United States,0100000US,355,Computer and electronic office equipment,0,0,1
+United States,0100000US,355,Computer and electronic office equipment,0,0,1
+United States,0100000US,356,Prepared unrecorded or prerecorded media,0,0,1
+United States,0100000US,357,"Transmission, and reception apparatus for radio, television, radar, and remote-control",819,1,1
+United States,0100000US,357,"Transmission, and reception apparatus for radio, television, radar, and remote-control",0,0,1
+United States,0100000US,358,Electronic components and parts,0,0,1
+United States,0100000US,358,Electronic components and parts,1386,0,1
+United States,0100000US,359,"Other electronic and electrical equipment, not elsewhere classified",356,39,1
+United States,0100000US,359,"Other electronic and electrical equipment, not elsewhere classified",7587,0,1
+United States,0100000US,36,Motorized and other vehicles (includes parts),1671,0,1
+United States,0100000US,36,Motorized and other vehicles (includes parts),0,0,1
+United States,0100000US,362,"Motor vehicles for the transport of goods, and road tractors for semi-trailers",0,0,1
+United States,0100000US,363,Other vehicles,913,0,1
+United States,0100000US,364,Motor vehicles parts and accessories (excludes motorcycles and armored fighting vehicles),583,37,1
+United States,0100000US,364,Motor vehicles parts and accessories (excludes motorcycles and armored fighting vehicles),0,0,1
+United States,0100000US,37,"Transportation equipment, not elsewhere classified",38,0,1
+United States,0100000US,372,Aircraft and spacecraft,38,0,1
+United States,0100000US,38,Precision instruments and apparatus,2612,32,1
+United States,0100000US,38,Precision instruments and apparatus,21772,1299,1
+United States,0100000US,381,"Optical elements, instruments, and apparatus (excludes photographic and cinematographic)",0,0,1
+United States,0100000US,381,"Optical elements, instruments, and apparatus (excludes photographic and cinematographic)",0,0,1
+United States,0100000US,382,Photographic and photocopying machines,0,0,1
+United States,0100000US,382,Photographic and photocopying machines,0,0,1
+United States,0100000US,383,"Surveying, hydrographic, oceanographic, hydrological, meteorological, and geophysical instruments and appliances",0,0,1
+United States,0100000US,383,"Surveying, hydrographic, oceanographic, hydrological, meteorological, and geophysical instruments and appliances",42,0,1
+United States,0100000US,384,"Instruments, apparatus, and appliances for medical, surgical, dental, veterinary, or similar purposes",0,0,1
+United States,0100000US,384,"Instruments, apparatus, and appliances for medical, surgical, dental, veterinary, or similar purposes",11755,0,1
+United States,0100000US,385,Meters and other instruments and apparatus for measuring or process control,1506,20,1
+United States,0100000US,385,Meters and other instruments and apparatus for measuring or process control,1729,24,1
+United States,0100000US,39,"Furniture, mattresses and mattress supports, lamps, lighting fittings, and illuminated signs",0,0,1
+United States,0100000US,39,"Furniture, mattresses and mattress supports, lamps, lighting fittings, and illuminated signs",0,0,1
+United States,0100000US,390,"Furniture, mattresses and mattress supports, lamps, lighting fittings, and illuminated signs",0,0,1
+United States,0100000US,390,"Furniture, mattresses and mattress supports, lamps, lighting fittings, and illuminated signs",0,0,1
+United States,0100000US,40,Miscellaneous manufactured products,1402,173,1
+United States,0100000US,40,Miscellaneous manufactured products,212,0,1
+United States,0100000US,401,Arms and ammunition,0,0,1
+United States,0100000US,401,Arms and ammunition,0,0,1
+United States,0100000US,402,"Toys, games, and sporting equipment",205,10,1
+United States,0100000US,402,"Toys, games, and sporting equipment",0,0,1
+United States,0100000US,409,Miscellaneous manufactured products,1187,163,1
+United States,0100000US,409,Miscellaneous manufactured products,183,0,1
+United States,0100000US,41,Waste and scrap,0,0,1
+United States,0100000US,411,Metallic waste and scrap,0,0,1
+United States,0100000US,412,Non-metallic waste and scrap (excludes food processing),0,0,1
+United States,0100000US,43,Mixed freight,570883,196911,1
+United States,0100000US,43,Mixed freight,850306,219492,1
+United States,0100000US,439,Mixed freight,570883,196911,1
+United States,0100000US,439,Mixed freight,850306,219492,1
