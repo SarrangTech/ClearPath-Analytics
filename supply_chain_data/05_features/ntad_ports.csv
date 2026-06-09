@@ -1,0 +1,27 @@
+port_name,lat,lon,state,type
+Port of Los Angeles,33.7286,-118.2622,CA,seaport
+Port of Long Beach,33.7547,-118.2106,CA,seaport
+Port of Houston,29.729,-95.2813,TX,seaport
+Port of New York/New Jersey,40.684,-74.0448,NJ,seaport
+Port of Savannah,32.0678,-81.0847,GA,seaport
+Port of Seattle,47.599,-122.338,WA,seaport
+Port of Tacoma,47.2714,-122.4125,WA,seaport
+Port of Baltimore,39.2635,-76.5778,MD,seaport
+Port of Norfolk/Virginia,36.9432,-76.3194,VA,seaport
+Port of Miami,25.774,-80.17,FL,seaport
+Port of New Orleans,29.9558,-90.0633,LA,seaport
+Port of Jacksonville,30.396,-81.5681,FL,seaport
+Port of Charleston,32.7817,-79.942,SC,seaport
+Port of Oakland,37.7956,-122.2809,CA,seaport
+Port of Portland,45.5496,-122.7622,OR,seaport
+Port of Beaumont,30.0813,-94.1225,TX,seaport
+Port of Corpus Christi,27.8137,-97.403,TX,seaport
+Port of Philadelphia,39.9246,-75.1394,PA,seaport
+Port of Boston,42.3519,-71.0406,MA,seaport
+Port of Tampa,27.935,-82.5228,FL,seaport
+Chicago Intermodal Hub,41.8781,-87.6298,IL,rail_intermodal
+Memphis Intermodal Hub,35.1495,-90.049,TN,rail_intermodal
+Kansas City Intermodal Hub,39.0997,-94.5786,MO,rail_intermodal
+Dallas Intermodal Hub,32.7767,-96.797,TX,rail_intermodal
+Atlanta Intermodal Hub,33.749,-84.388,GA,rail_intermodal
+St. Louis Intermodal Hub,38.627,-90.1994,MO,rail_intermodal

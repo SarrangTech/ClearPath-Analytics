@@ -33,3 +33,33 @@ SCHM 6201 — Operations and Supply Chain Management
        Result : Extracted to 02_shapefiles\cfs_areas  |  shapefile: 2022_CFS_Areas.shp
        Note   : 134 freight zones — geographic unit for CFS API data
 
+=================================================================
+CORRECTION — Centroid coordinates rebuilt (2026-06-09)
+=================================================================
+
+[FIXED] Geocoding bug in centroids.csv corrupted ~74% of corridor distances.
+
+       Problem  : The original centroids.csv was geocoded by area NAME, which
+                  collapsed 66 of 134 CFS areas onto shared, often-wrong
+                  coordinates. Buffalo, Rochester and Albany all sat on New
+                  York City's lat/lon; Baltimore, MD landed in Columbia, SC.
+                  This produced 118 zero-distance corridors and silently wrong
+                  distances on 13,266 of 17,822 corridors (74%).
+
+       Fix      : Coordinates rebuilt from the authoritative Census internal
+                  points (INTPTLAT/INTPTLON) carried in 2022_CFS_Areas.shp,
+                  joined on GEO_ID (shapefile field CFS22_GE_1). All 134 areas
+                  now have distinct, correct coordinates.
+
+       Rebuilt  : 05_features\centroids.csv          (coords corrected)
+                  05_features\distance_matrix.csv    (17,822 haversine dists; 0 zeros)
+                  05_features\features_master.csv    (8 geo columns recomputed)
+                  05_features\port_proximity.csv     (5 port columns recomputed)
+       Backups  : same folder, *.orig.csv (pre-fix versions)
+       Scripts  : scripts\rebuild_centroids.py -> rebuild_features.py
+                  (see scripts\README.md for the full pipeline)
+
+       Impact   : Network Graph + Rerouting workstreams must re-pull the four
+                  rebuilt files. Non-geographic columns (VAL, TON, norms,
+                  vulnerability_score, rank, commodity fields) are UNCHANGED.
+
