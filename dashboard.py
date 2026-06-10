@@ -1113,13 +1113,15 @@ elif page == "📦 Commodity Risk":
                     x="VAL", y="COMM_LABEL", orientation="h",
                     color="VAL",
                     color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-                    labels={"VAL": "Total Freight Value ($K)", "COMM_LABEL": "Commodity"},
+                    labels={"VAL": "Total Freight Value ($K)", "COMM_LABEL": ""},
                     title="Top 20 Commodities by Total Freight Value",
                 )
                 fig_tv.update_layout(template="plotly_dark", coloraxis_showscale=False,
                                      yaxis={"categoryorder": "total ascending"},
-                                     height=540, margin=dict(l=10, r=10, t=50, b=10))
-                st.plotly_chart(fig_tv, width="stretch")
+                                     xaxis={"tickformat": ",.0s", "ticksuffix": ""},
+                                     height=540, margin=dict(l=220, r=20, t=50, b=60))
+                fig_tv.update_xaxes(title_text="Total Freight Value ($K)")
+                st.plotly_chart(fig_tv, use_container_width=True)
 
             with col_r:
                 fig_tt = px.bar(
@@ -1127,13 +1129,15 @@ elif page == "📦 Commodity Risk":
                     x="TON", y="COMM_LABEL", orientation="h",
                     color="TON",
                     color_continuous_scale=["#4a90d9", "#2ca02c", "#d62728"],
-                    labels={"TON": "Total Tonnage (K tons)", "COMM_LABEL": "Commodity"},
-                    title="Top 20 Commodities by Total Tonnage",
+                    labels={"TON": "Total Tonnage (K tons)", "COMM_LABEL": ""},
+                    title="Top 20 Commodities by Total Tonnage (K tons)",
                 )
                 fig_tt.update_layout(template="plotly_dark", coloraxis_showscale=False,
                                      yaxis={"categoryorder": "total ascending"},
-                                     height=540, margin=dict(l=10, r=10, t=50, b=10))
-                st.plotly_chart(fig_tt, width="stretch")
+                                     xaxis={"tickformat": ",.0s"},
+                                     height=540, margin=dict(l=220, r=20, t=50, b=60))
+                fig_tt.update_xaxes(title_text="Total Tonnage (K tons)")
+                st.plotly_chart(fig_tt, use_container_width=True)
 
             st.divider()
             st.subheader("Commodity Concentration — Which Areas Dominate Each Commodity?")
