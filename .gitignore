@@ -1,1 +1,2 @@
 supply_chain_data/03_outputs/interactive_freight_map.html\nsupply_chain_data/02_shapefiles/county/tl_2022_us_county.shp\nsupply_chain_data/02_shapefiles/cfs_areas/tl_us_county.shp
+.env
