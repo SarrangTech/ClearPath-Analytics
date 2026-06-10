@@ -873,6 +873,11 @@ elif page == "🔍 Area Deep-Dive":
     </div>
     """, unsafe_allow_html=True)
 
+    st.markdown("""
+    <style>
+    [data-testid="stMetricValue"] { font-size: 1.4rem !important; }
+    </style>
+    """, unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Risk Tier", row["tier"])
     c2.metric("Vulnerability Score", f"{row['vulnerability_score']:.4f}")
