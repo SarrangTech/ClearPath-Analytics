@@ -1218,13 +1218,14 @@ elif page == "📦 Commodity Risk":
                     x="VAL", y="COMM_LABEL", orientation="h",
                     color="VAL",
                     color_continuous_scale=["#ff7f0e", "#d62728"],
-                    labels={"VAL": "Freight Value ($K)", "COMM_LABEL": "Hazmat Commodity"},
+                    labels={"VAL": "Freight Value ($K)", "COMM_LABEL": ""},
                     title="Hazardous Materials by Freight Value",
                 )
                 fig_hv.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                     yaxis={"categoryorder": "total ascending"},
-                                     height=440, margin=dict(l=10, r=10, t=50, b=10))
-                st.plotly_chart(fig_hv, width="stretch")
+                                     yaxis={"categoryorder": "total ascending", "title": ""},
+                                     height=520, margin=dict(l=300, r=20, t=50, b=60))
+                fig_hv.update_xaxes(title_text="Freight Value ($K)", nticks=4, tickformat="~s", tickangle=0)
+                st.plotly_chart(fig_hv, use_container_width=True)
 
             with col_h2:
                 fig_ht = px.bar(
@@ -1232,13 +1233,14 @@ elif page == "📦 Commodity Risk":
                     x="TON", y="COMM_LABEL", orientation="h",
                     color="TON",
                     color_continuous_scale=["#ff7f0e", "#d62728"],
-                    labels={"TON": "Tonnage (K tons)", "COMM_LABEL": "Hazmat Commodity"},
+                    labels={"TON": "Tonnage (K tons)", "COMM_LABEL": ""},
                     title="Hazardous Materials by Tonnage",
                 )
                 fig_ht.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                     yaxis={"categoryorder": "total ascending"},
-                                     height=440, margin=dict(l=10, r=10, t=50, b=10))
-                st.plotly_chart(fig_ht, width="stretch")
+                                     yaxis={"categoryorder": "total ascending", "title": ""},
+                                     height=520, margin=dict(l=300, r=20, t=50, b=60))
+                fig_ht.update_xaxes(title_text="Tonnage (K tons)", nticks=4, tickformat="~s", tickangle=0)
+                st.plotly_chart(fig_ht, use_container_width=True)
 
             st.divider()
             all_hz = hazmat_df[hazmat_df["COMM_LABEL"] == "All Commodities"].drop_duplicates(subset=["VAL"])
