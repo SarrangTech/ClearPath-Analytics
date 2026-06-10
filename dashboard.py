@@ -706,6 +706,8 @@ elif page == "🔗 Gravity Corridors":
     )
 
     grav_df = gravity_df[gravity_df["GEO_ID_origin"] != gravity_df["GEO_ID_dest"]].copy()
+    g_max = grav_df["gravity"].max()
+    grav_df["gravity_norm"] = grav_df["gravity"] / g_max if g_max > 0 else grav_df["gravity_norm"]
 
     c1, c2, c3 = st.columns(3)
     c1.metric("Total Directed Corridors", f"{len(grav_df):,}")
@@ -802,8 +804,9 @@ elif page == "🔗 Gravity Corridors":
             lon=[row.lon_o, row.lon_d, None],
             lat=[row.lat_o, row.lat_d, None],
             mode="lines",
-            line=dict(width=0.5 + 3 * gnorm,
-                      color=f"rgba({int(60+195*gnorm)},68,{int(200-200*gnorm)},0.6)"),
+            line=dict(width=1.0 + 3 * gnorm,
+                      color=f"rgba({int(60+195*gnorm)},68,{int(200-200*gnorm)},0.85)"),
+            opacity=0.55 + 0.4 * gnorm,
             hoverinfo="none",
             showlegend=False,
         ))
