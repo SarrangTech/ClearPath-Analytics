@@ -1105,50 +1105,41 @@ elif page == "📦 Commodity Risk":
                 .sum().reset_index()
                 .nlargest(20, "VAL")
             )
+            top_comm["COMM_SHORT"] = top_comm["COMM_LABEL"].str[:45]
 
             col_l, col_r = st.columns(2)
             with col_l:
                 fig_tv = px.bar(
                     top_comm.sort_values("VAL"),
-                    x="VAL", y="COMM_LABEL", orientation="h",
+                    x="VAL", y="COMM_SHORT", orientation="h",
                     color="VAL",
                     color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-                    labels={"VAL": "Total Freight Value ($K)", "COMM_LABEL": ""},
+                    labels={"VAL": "Freight Value ($K)", "COMM_SHORT": ""},
                     title="Top 20 Commodities by Total Freight Value",
                 )
                 fig_tv.update_layout(
                     template="plotly_dark", coloraxis_showscale=False,
-                    yaxis={"categoryorder": "total ascending", "title": ""},
-                    height=560, margin=dict(l=220, r=20, t=50, b=60),
+                    yaxis={"categoryorder": "total ascending", "title": "", "tickfont": {"size": 11}},
+                    height=580, margin=dict(l=300, r=20, t=50, b=60),
                 )
-                fig_tv.update_xaxes(
-                    title_text="Freight Value ($K)",
-                    nticks=4,
-                    tickformat="~s",
-                    tickangle=0,
-                )
+                fig_tv.update_xaxes(title_text="Freight Value ($K)", nticks=5, tickangle=-30)
                 st.plotly_chart(fig_tv, use_container_width=True)
 
             with col_r:
                 fig_tt = px.bar(
                     top_comm.sort_values("TON"),
-                    x="TON", y="COMM_LABEL", orientation="h",
+                    x="TON", y="COMM_SHORT", orientation="h",
                     color="TON",
                     color_continuous_scale=["#4a90d9", "#2ca02c", "#d62728"],
-                    labels={"TON": "Total Tonnage (K tons)", "COMM_LABEL": ""},
+                    labels={"TON": "Tonnage (K tons)", "COMM_SHORT": ""},
                     title="Top 20 Commodities by Total Tonnage (K tons)",
                 )
                 fig_tt.update_layout(
                     template="plotly_dark", coloraxis_showscale=False,
-                    yaxis={"categoryorder": "total ascending", "title": ""},
-                    height=560, margin=dict(l=220, r=20, t=50, b=60),
+                    yaxis={"categoryorder": "total ascending", "title": "", "tickfont": {"size": 11}},
+                    height=580, margin=dict(l=300, r=20, t=50, b=60),
                 )
-                fig_tt.update_xaxes(
-                    title_text="Tonnage (K tons)",
-                    nticks=4,
-                    tickformat="~s",
-                    tickangle=0,
-                )
+                fig_tt.update_xaxes(title_text="Tonnage (K tons)", nticks=5, tickangle=-30)
                 st.plotly_chart(fig_tt, use_container_width=True)
 
             st.divider()
