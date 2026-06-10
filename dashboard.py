@@ -53,6 +53,10 @@ RISK_FILE    = os.path.join(BASE, "supply_chain_data", "03_outputs",  "risk_tier
 PORT_FILE    = os.path.join(BASE, "supply_chain_data", "05_features", "ntad_ports.csv")
 SIM_FILE     = os.path.join(BASE, "supply_chain_data", "06_network_outputs", "failure_simulation_results.csv")
 DETAIL_FILE  = os.path.join(BASE, "supply_chain_data", "06_network_outputs", "05_rerouting_detail.csv")
+FREIGHT_FILE = os.path.join(BASE, "supply_chain_data", "01_api_data", "cfs_freight_area.csv")
+HAZMAT_FILE  = os.path.join(BASE, "supply_chain_data", "01_api_data", "cfs_hazmat.csv")
+TEMP_FILE    = os.path.join(BASE, "supply_chain_data", "01_api_data", "cfs_temp_controlled.csv")
+EXPORT_FILE  = os.path.join(BASE, "supply_chain_data", "01_api_data", "cfs_exports.csv")
 
 K_NEIGHBORS       = 8
 COST_PER_TON_MILE = 0.08
@@ -69,6 +73,12 @@ def load_data():
     port_df    = pd.read_csv(PORT_FILE)
     sim_df     = pd.read_csv(SIM_FILE)
     detail_df  = pd.read_csv(DETAIL_FILE) if os.path.exists(DETAIL_FILE) else pd.DataFrame()
+
+    # New data sources
+    freight_df = pd.read_csv(FREIGHT_FILE) if os.path.exists(FREIGHT_FILE) else pd.DataFrame()
+    hazmat_df  = pd.read_csv(HAZMAT_FILE)  if os.path.exists(HAZMAT_FILE)  else pd.DataFrame()
+    temp_df    = pd.read_csv(TEMP_FILE)    if os.path.exists(TEMP_FILE)    else pd.DataFrame()
+    export_df  = pd.read_csv(EXPORT_FILE)  if os.path.exists(EXPORT_FILE)  else pd.DataFrame()
 
     def short_name(n):
         n = n.split(";")[0].strip()
@@ -101,7 +111,7 @@ def load_data():
     node_meta["short_name"] = node_meta["NAME"].apply(short_name)
     node_meta["color"]      = node_meta["tier"].map(TIER_COLOR)
 
-    return feat_df, cent_df, dist_df, gravity_df, risk_df, port_df, sim_df, detail_df, node_meta
+    return feat_df, cent_df, dist_df, gravity_df, risk_df, port_df, sim_df, detail_df, node_meta, freight_df, hazmat_df, temp_df, export_df
 
 
 @st.cache_data
@@ -158,7 +168,7 @@ def build_graph(dist_df, node_meta, gravity_df):
 
 
 # ── Load everything ───────────────────────────────────────────────────────────
-feat_df, cent_df, dist_df, gravity_df, risk_df, port_df, sim_df, detail_df, node_meta = load_data()
+feat_df, cent_df, dist_df, gravity_df, risk_df, port_df, sim_df, detail_df, node_meta, freight_df, hazmat_df, temp_df, export_df = load_data()
 G = build_graph(dist_df, node_meta, gravity_df)
 
 high_df   = node_meta[node_meta["tier"] == "HIGH"]
@@ -183,7 +193,8 @@ with st.sidebar:
          "🗺️ Network Map",
          "💥 Failure Simulation",
          "🔗 Gravity Corridors",
-         "🔍 Area Deep-Dive"],
+         "🔍 Area Deep-Dive",
+         "📦 Commodity Risk"],
         label_visibility="collapsed",
     )
 
@@ -966,3 +977,361 @@ elif page == "🔍 Area Deep-Dive":
                 st.divider()
                 st.subheader("Most Impacted Routes if This Area Fails")
                 st.dataframe(area_detail.head(20), width="stretch", height=280)
+
+    # ── Per-area commodity breakdown ─────────────────────────────────────────
+    if not freight_df.empty:
+        st.divider()
+        st.subheader("Commodity Breakdown for This Area")
+        area_comm = freight_df[
+            (freight_df["GEO_ID"] == geo_id) &
+            (freight_df["COMM"] != "0000") &
+            (freight_df["COMM_LABEL"] != "All Commodities")
+        ].copy()
+        area_comm = area_comm.groupby("COMM_LABEL")[["VAL", "TON"]].sum().reset_index()
+        area_comm = area_comm[area_comm["VAL"] > 0].nlargest(15, "VAL")
+        if not area_comm.empty:
+            col_cv, col_ct = st.columns(2)
+            with col_cv:
+                fig_cv = px.bar(
+                    area_comm.sort_values("VAL"),
+                    x="VAL", y="COMM_LABEL", orientation="h",
+                    color="VAL",
+                    color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
+                    labels={"VAL": "Freight Value ($K)", "COMM_LABEL": ""},
+                    title=f"Top Commodities by Value — {selected[:28]}",
+                )
+                fig_cv.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                     height=380, margin=dict(l=10, r=10, t=50, b=10),
+                                     yaxis={"categoryorder": "total ascending"})
+                st.plotly_chart(fig_cv, width="stretch")
+            with col_ct:
+                fig_ct = px.bar(
+                    area_comm.sort_values("TON"),
+                    x="TON", y="COMM_LABEL", orientation="h",
+                    color="TON",
+                    color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
+                    labels={"TON": "Tonnage (K tons)", "COMM_LABEL": ""},
+                    title=f"Top Commodities by Tonnage — {selected[:28]}",
+                )
+                fig_ct.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                     height=380, margin=dict(l=10, r=10, t=50, b=10),
+                                     yaxis={"categoryorder": "total ascending"})
+                st.plotly_chart(fig_ct, width="stretch")
+        else:
+            st.info("No commodity-level data available for this area.")
+
+
+# =============================================================================
+# PAGE 6 — COMMODITY RISK
+# =============================================================================
+elif page == "📦 Commodity Risk":
+    st.title("📦 Commodity Risk Analysis")
+    st.caption(
+        "Breakdown of freight exposure by commodity type · hazardous materials · "
+        "temperature-controlled freight · state-level export dependency"
+    )
+
+    # ── KPIs ─────────────────────────────────────────────────────────────────
+    if not freight_df.empty:
+        cfs_comm = freight_df[
+            freight_df["GEO_ID"].str.startswith("E330", na=False) &
+            (freight_df["COMM_LABEL"] != "All Commodities")
+        ]
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Commodity Categories", cfs_comm["COMM_LABEL"].nunique())
+        c2.metric("CFS Areas with Data", cfs_comm["GEO_ID"].nunique())
+        if not hazmat_df.empty:
+            hz_total = hazmat_df[hazmat_df["COMM_LABEL"] == "All Commodities"]["VAL"].max()
+            c3.metric("Total Hazmat Value", f"${hz_total/1e6:,.1f}T")
+        if not temp_df.empty:
+            tc_total = temp_df[temp_df["COMM_LABEL"] == "All Commodities"]["VAL"].max()
+            c4.metric("Temp-Controlled Value", f"${tc_total/1e6:,.1f}T")
+
+    st.divider()
+
+    # ── TAB layout ────────────────────────────────────────────────────────────
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "🏷️ Commodity Exposure",
+        "☣️ Hazardous Materials",
+        "🌡️ Temperature-Controlled",
+        "🚢 Export Dependency",
+    ])
+
+    # ── TAB 1: Commodity Exposure ─────────────────────────────────────────────
+    with tab1:
+        st.subheader("Top Commodities by Freight Value Across All CFS Areas")
+        if not freight_df.empty:
+            cfs_only = freight_df[
+                freight_df["GEO_ID"].str.startswith("E330", na=False) &
+                (freight_df["COMM_LABEL"] != "All Commodities") &
+                (freight_df["COMM"] != "0000")
+            ].copy()
+            top_comm = (
+                cfs_only.groupby("COMM_LABEL")[["VAL", "TON"]]
+                .sum().reset_index()
+                .nlargest(20, "VAL")
+            )
+
+            col_l, col_r = st.columns(2)
+            with col_l:
+                fig_tv = px.bar(
+                    top_comm.sort_values("VAL"),
+                    x="VAL", y="COMM_LABEL", orientation="h",
+                    color="VAL",
+                    color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
+                    labels={"VAL": "Total Freight Value ($K)", "COMM_LABEL": "Commodity"},
+                    title="Top 20 Commodities by Total Freight Value",
+                )
+                fig_tv.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                     yaxis={"categoryorder": "total ascending"},
+                                     height=540, margin=dict(l=10, r=10, t=50, b=10))
+                st.plotly_chart(fig_tv, width="stretch")
+
+            with col_r:
+                fig_tt = px.bar(
+                    top_comm.sort_values("TON"),
+                    x="TON", y="COMM_LABEL", orientation="h",
+                    color="TON",
+                    color_continuous_scale=["#4a90d9", "#2ca02c", "#d62728"],
+                    labels={"TON": "Total Tonnage (K tons)", "COMM_LABEL": "Commodity"},
+                    title="Top 20 Commodities by Total Tonnage",
+                )
+                fig_tt.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                     yaxis={"categoryorder": "total ascending"},
+                                     height=540, margin=dict(l=10, r=10, t=50, b=10))
+                st.plotly_chart(fig_tt, width="stretch")
+
+            st.divider()
+            st.subheader("Commodity Concentration — Which Areas Dominate Each Commodity?")
+            selected_comm = st.selectbox(
+                "Select a commodity",
+                sorted(cfs_only["COMM_LABEL"].unique().tolist()),
+                index=sorted(cfs_only["COMM_LABEL"].unique().tolist()).index("Pharmaceutical products")
+                      if "Pharmaceutical products" in cfs_only["COMM_LABEL"].unique() else 0,
+            )
+            comm_areas = (
+                cfs_only[cfs_only["COMM_LABEL"] == selected_comm]
+                .groupby("NAME")[["VAL", "TON"]].sum().reset_index()
+                .nlargest(15, "VAL")
+            )
+            comm_areas["NAME"] = comm_areas["NAME"].str.split(";").str[0].str.replace(" CFS Area", "").str[:40]
+            fig_ca = px.bar(
+                comm_areas.sort_values("VAL"),
+                x="VAL", y="NAME", orientation="h",
+                color="VAL",
+                color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
+                labels={"VAL": "Freight Value ($K)", "NAME": ""},
+                title=f"Top 15 CFS Areas for: {selected_comm}",
+                text="VAL",
+            )
+            fig_ca.update_traces(texttemplate="%{text:,.0f}", textposition="outside")
+            fig_ca.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                 yaxis={"categoryorder": "total ascending"},
+                                 height=460, margin=dict(l=10, r=80, t=50, b=10))
+            st.plotly_chart(fig_ca, width="stretch")
+
+            # Also merge with risk tier to show exposure by tier
+            st.divider()
+            st.subheader("Commodity Exposure by Risk Tier")
+            cfs_tier = cfs_only.merge(
+                node_meta[["GEO_ID", "tier"]].drop_duplicates(),
+                on="GEO_ID", how="left"
+            )
+            tier_comm = (
+                cfs_tier.groupby(["COMM_LABEL", "tier"])["VAL"]
+                .sum().reset_index()
+            )
+            top20 = tier_comm.groupby("COMM_LABEL")["VAL"].sum().nlargest(20).index
+            tier_comm_top = tier_comm[tier_comm["COMM_LABEL"].isin(top20)]
+            fig_tc = px.bar(
+                tier_comm_top,
+                x="VAL", y="COMM_LABEL",
+                color="tier",
+                color_discrete_map=TIER_COLOR,
+                orientation="h",
+                barmode="stack",
+                labels={"VAL": "Freight Value ($K)", "COMM_LABEL": "Commodity", "tier": "Risk Tier"},
+                title="Top 20 Commodities — freight value split by risk tier of originating area",
+                category_orders={"tier": ["HIGH", "MEDIUM", "LOW"]},
+            )
+            fig_tc.update_layout(template="plotly_dark",
+                                 yaxis={"categoryorder": "total ascending"},
+                                 height=520, margin=dict(l=10, r=10, t=50, b=10))
+            st.plotly_chart(fig_tc, width="stretch")
+            st.caption("RED = value originating from HIGH-risk areas — these commodities face the greatest exposure to disruption.")
+
+    # ── TAB 2: Hazmat ─────────────────────────────────────────────────────────
+    with tab2:
+        st.subheader("☣️ Hazardous Materials Freight — National Breakdown")
+        st.caption("Source: 2022 CFS Hazmat supplement · national-level totals by commodity type")
+        if not hazmat_df.empty:
+            hz = hazmat_df[
+                (hazmat_df["COMM_LABEL"] != "All Commodities") &
+                (hazmat_df["VAL"] > 0)
+            ].drop_duplicates(subset=["COMM_LABEL"]).copy()
+
+            col_h1, col_h2 = st.columns(2)
+            with col_h1:
+                fig_hv = px.bar(
+                    hz.sort_values("VAL"),
+                    x="VAL", y="COMM_LABEL", orientation="h",
+                    color="VAL",
+                    color_continuous_scale=["#ff7f0e", "#d62728"],
+                    labels={"VAL": "Freight Value ($K)", "COMM_LABEL": "Hazmat Commodity"},
+                    title="Hazardous Materials by Freight Value",
+                )
+                fig_hv.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                     yaxis={"categoryorder": "total ascending"},
+                                     height=440, margin=dict(l=10, r=10, t=50, b=10))
+                st.plotly_chart(fig_hv, width="stretch")
+
+            with col_h2:
+                fig_ht = px.bar(
+                    hz[hz["TON"] > 0].sort_values("TON"),
+                    x="TON", y="COMM_LABEL", orientation="h",
+                    color="TON",
+                    color_continuous_scale=["#ff7f0e", "#d62728"],
+                    labels={"TON": "Tonnage (K tons)", "COMM_LABEL": "Hazmat Commodity"},
+                    title="Hazardous Materials by Tonnage",
+                )
+                fig_ht.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                     yaxis={"categoryorder": "total ascending"},
+                                     height=440, margin=dict(l=10, r=10, t=50, b=10))
+                st.plotly_chart(fig_ht, width="stretch")
+
+            st.divider()
+            all_hz = hazmat_df[hazmat_df["COMM_LABEL"] == "All Commodities"].drop_duplicates(subset=["VAL"])
+            if not all_hz.empty:
+                hz_val  = all_hz["VAL"].sum()
+                hz_ton  = all_hz["TON"].sum()
+                st.info(
+                    f"**Total hazmat freight value: ${hz_val/1e6:,.2f}T** · "
+                    f"**Total hazmat tonnage: {hz_ton/1e3:,.0f}M tons** · "
+                    "Gasoline and fuel oils account for the vast majority of hazmat value and tonnage."
+                )
+            st.dataframe(
+                hz[["COMM_LABEL", "VAL", "TON"]]
+                .rename(columns={"COMM_LABEL": "Commodity", "VAL": "Value ($K)", "TON": "Tonnage (K)"})
+                .sort_values("Value ($K)", ascending=False),
+                width="stretch", height=320,
+            )
+
+    # ── TAB 3: Temperature-Controlled ─────────────────────────────────────────
+    with tab3:
+        st.subheader("🌡️ Temperature-Controlled Freight — National Breakdown")
+        st.caption("Source: 2022 CFS Temperature-Controlled supplement · perishable and pharmaceutical freight")
+        if not temp_df.empty:
+            tc = temp_df[
+                (temp_df["COMM_LABEL"] != "All Commodities") &
+                (temp_df["VAL"] > 0)
+            ].drop_duplicates(subset=["COMM_LABEL"]).nlargest(15, "VAL")
+
+            col_t1, col_t2 = st.columns(2)
+            with col_t1:
+                fig_tcv = px.bar(
+                    tc.sort_values("VAL"),
+                    x="VAL", y="COMM_LABEL", orientation="h",
+                    color="VAL",
+                    color_continuous_scale=["#4a90d9", "#2ca02c", "#ff7f0e"],
+                    labels={"VAL": "Freight Value ($K)", "COMM_LABEL": "Commodity"},
+                    title="Top 15 Temp-Controlled Commodities by Value",
+                )
+                fig_tcv.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                      yaxis={"categoryorder": "total ascending"},
+                                      height=440, margin=dict(l=10, r=10, t=50, b=10))
+                st.plotly_chart(fig_tcv, width="stretch")
+
+            with col_t2:
+                fig_tct = px.bar(
+                    tc[tc["TON"] > 0].sort_values("TON"),
+                    x="TON", y="COMM_LABEL", orientation="h",
+                    color="TON",
+                    color_continuous_scale=["#4a90d9", "#2ca02c", "#ff7f0e"],
+                    labels={"TON": "Tonnage (K tons)", "COMM_LABEL": "Commodity"},
+                    title="Top 15 Temp-Controlled Commodities by Tonnage",
+                )
+                fig_tct.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                      yaxis={"categoryorder": "total ascending"},
+                                      height=440, margin=dict(l=10, r=10, t=50, b=10))
+                st.plotly_chart(fig_tct, width="stretch")
+
+            st.divider()
+            tc_all = temp_df[temp_df["COMM_LABEL"] == "All Commodities"].drop_duplicates(subset=["VAL"])
+            if not tc_all.empty:
+                tc_val = tc_all["VAL"].sum()
+                tc_ton = tc_all["TON"].sum()
+                st.info(
+                    f"**Total temp-controlled freight value: ${tc_val/1e6:,.2f}T** · "
+                    f"**Total tonnage: {tc_ton/1e3:,.0f}M tons** · "
+                    "Pharmaceuticals and meat/poultry are the highest-value perishable categories."
+                )
+            st.dataframe(
+                temp_df[
+                    (temp_df["COMM_LABEL"] != "All Commodities") & (temp_df["VAL"] > 0)
+                ].drop_duplicates(subset=["COMM_LABEL"])[["COMM_LABEL", "VAL", "TON"]]
+                .rename(columns={"COMM_LABEL": "Commodity", "VAL": "Value ($K)", "TON": "Tonnage (K)"})
+                .sort_values("Value ($K)", ascending=False),
+                width="stretch", height=360,
+            )
+
+    # ── TAB 4: Export Dependency ───────────────────────────────────────────────
+    with tab4:
+        st.subheader("🚢 State-Level Export Freight Dependency")
+        st.caption("Source: 2022 CFS Exports supplement · shipments destined for export by state")
+        if not export_df.empty:
+            ex = export_df.drop_duplicates(subset=["NAME", "COMM"]).copy()
+            ex_all = ex[ex["COMM_LABEL"] == "All Commodities"].sort_values("VAL", ascending=False)
+
+            col_e1, col_e2 = st.columns(2)
+            with col_e1:
+                fig_ev = px.bar(
+                    ex_all.sort_values("VAL").tail(20),
+                    x="VAL", y="NAME", orientation="h",
+                    color="VAL",
+                    color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
+                    labels={"VAL": "Export Freight Value ($K)", "NAME": "State"},
+                    title="Top 20 States by Export Freight Value",
+                    text="VAL",
+                )
+                fig_ev.update_traces(texttemplate="%{text:,.0f}", textposition="outside")
+                fig_ev.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                     yaxis={"categoryorder": "total ascending"},
+                                     height=520, margin=dict(l=10, r=80, t=50, b=10))
+                st.plotly_chart(fig_ev, width="stretch")
+
+            with col_e2:
+                fig_et = px.bar(
+                    ex_all.sort_values("TON").tail(20),
+                    x="TON", y="NAME", orientation="h",
+                    color="TON",
+                    color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
+                    labels={"TON": "Export Tonnage (K tons)", "NAME": "State"},
+                    title="Top 20 States by Export Tonnage",
+                )
+                fig_et.update_layout(template="plotly_dark", coloraxis_showscale=False,
+                                     yaxis={"categoryorder": "total ascending"},
+                                     height=520, margin=dict(l=10, r=10, t=50, b=10))
+                st.plotly_chart(fig_et, width="stretch")
+
+            st.divider()
+            st.subheader("Export Value Map by State")
+            fig_map = px.choropleth(
+                ex_all,
+                locations="NAME",
+                locationmode="USA-states",
+                color="VAL",
+                color_continuous_scale=["#1a1a2e", "#4a90d9", "#ff7f0e", "#d62728"],
+                scope="usa",
+                labels={"VAL": "Export Value ($K)", "NAME": "State"},
+                title="Export Freight Value by State — darker = higher export dependency",
+            )
+            fig_map.update_layout(
+                template="plotly_dark", height=420,
+                margin=dict(l=0, r=0, t=50, b=0),
+                coloraxis_colorbar=dict(title="Value ($K)"),
+            )
+            st.plotly_chart(fig_map, width="stretch")
+            st.caption(
+                "California, Texas, and Washington dominate export freight — "
+                "these states carry the highest exposure to port disruptions."
+            )
