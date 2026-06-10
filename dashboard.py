@@ -705,7 +705,7 @@ elif page == "🔗 Gravity Corridors":
         "Higher gravity = more freight value exchanged per unit distance."
     )
 
-    grav_df = gravity_df.copy()
+    grav_df = gravity_df[gravity_df["GEO_ID_origin"] != gravity_df["GEO_ID_dest"]].copy()
 
     c1, c2, c3 = st.columns(3)
     c1.metric("Total Directed Corridors", f"{len(grav_df):,}")
@@ -780,7 +780,7 @@ elif page == "🔗 Gravity Corridors":
     st.divider()
 
     st.subheader("Corridor Map — Top Gravity Corridors")
-    n_map = st.slider("Corridors to draw on map", 20, 200, 50)
+    n_map = st.slider("Corridors to draw on map", 20, 200, 100)
 
     top_map = grav_df.nlargest(n_map, "gravity").copy()
     top_map = top_map.merge(
