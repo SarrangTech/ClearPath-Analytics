@@ -1205,10 +1205,11 @@ elif page == "📦 Commodity Risk":
         st.subheader("☣️ Hazardous Materials Freight — National Breakdown")
         st.caption("Source: 2022 CFS Hazmat supplement · national-level totals by commodity type")
         if not hazmat_df.empty:
-            hz = hazmat_df[
-                (hazmat_df["COMM_LABEL"] != "All Commodities") &
-                (hazmat_df["VAL"] > 0)
-            ].drop_duplicates(subset=["COMM_LABEL"]).copy()
+            hz = (
+                hazmat_df[hazmat_df["COMM_LABEL"] != "All Commodities"]
+                .groupby("COMM_LABEL")[["VAL", "TON"]].sum().reset_index()
+            )
+            hz = hz[hz["VAL"] > 0].copy()
 
             col_h1, col_h2 = st.columns(2)
             with col_h1:
