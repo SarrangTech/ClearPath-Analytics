@@ -52,7 +52,7 @@ GRAVITY_FILE = os.path.join(BASE, "supply_chain_data", "03_outputs",  "corridor_
 RISK_FILE    = os.path.join(BASE, "supply_chain_data", "03_outputs",  "risk_tier_output.csv")
 PORT_FILE    = os.path.join(BASE, "supply_chain_data", "05_features", "ntad_ports.csv")
 SIM_FILE     = os.path.join(BASE, "supply_chain_data", "06_network_outputs", "failure_simulation_results.csv")
-DETAIL_FILE  = os.path.join(BASE, "supply_chain_data", "06_network_outputs", "05_rerouting_detail.csv")
+DETAIL_FILE  = os.path.join(BASE, "supply_chain_data", "06_network_outputs", "rerouting_detail.csv")
 FREIGHT_FILE = os.path.join(BASE, "supply_chain_data", "01_api_data", "cfs_freight_area.csv")
 HAZMAT_FILE  = os.path.join(BASE, "supply_chain_data", "01_api_data", "cfs_hazmat.csv")
 TEMP_FILE    = os.path.join(BASE, "supply_chain_data", "01_api_data", "cfs_temp_controlled.csv")
@@ -1315,9 +1315,27 @@ elif page == "📦 Commodity Risk":
 
             st.divider()
             st.subheader("Export Value Map by State")
+            _STATE_ABBR = {
+                'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR',
+                'California': 'CA', 'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE',
+                'Florida': 'FL', 'Georgia': 'GA', 'Hawaii': 'HI', 'Idaho': 'ID',
+                'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA', 'Kansas': 'KS',
+                'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD',
+                'Massachusetts': 'MA', 'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS',
+                'Missouri': 'MO', 'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV',
+                'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY',
+                'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH', 'Oklahoma': 'OK',
+                'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC',
+                'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX', 'Utah': 'UT',
+                'Vermont': 'VT', 'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV',
+                'Wisconsin': 'WI', 'Wyoming': 'WY', 'District of Columbia': 'DC',
+            }
+            ex_all_map = ex_all.copy()
+            ex_all_map['abbr'] = ex_all_map['NAME'].map(_STATE_ABBR)
+            ex_all_map = ex_all_map.dropna(subset=['abbr'])
             fig_map = px.choropleth(
-                ex_all,
-                locations="NAME",
+                ex_all_map,
+                locations="abbr",
                 locationmode="USA-states",
                 color="VAL",
                 color_continuous_scale=["#1a1a2e", "#4a90d9", "#ff7f0e", "#d62728"],
