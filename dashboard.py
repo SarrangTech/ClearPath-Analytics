@@ -975,19 +975,22 @@ elif page == "🔍 Area Deep-Dive":
         ), axis=1
     )
     top_corridors = area_grav.nlargest(15, "gravity")
-    fig_ac = px.bar(
-        top_corridors.sort_values("gravity_norm"),
-        x="gravity_norm",
-        y="corridor",
-        orientation="h",
-        color="gravity_norm",
-        color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-        labels={"gravity_norm": "Gravity (normalised)", "corridor": ""},
-        title=f"Top 15 Gravity Corridors for {selected[:30]}",
+    _ac_sorted = top_corridors.sort_values("gravity_norm").copy()
+    _ac_sorted["_bar_color"] = _ac_sorted["gravity_norm"].apply(
+        lambda g: f"rgb({int(60+195*g)},{int(100-60*g)},{int(200-180*g)})"
     )
+    fig_ac = go.Figure(go.Bar(
+        x=_ac_sorted["gravity_norm"],
+        y=_ac_sorted["corridor"],
+        orientation="h",
+        marker_color=_ac_sorted["_bar_color"].tolist(),
+        hovertemplate="<b>%{y}</b><br>Gravity (norm): %{x:.4f}<extra></extra>",
+    ))
     fig_ac.update_layout(
-        template="plotly_dark", coloraxis_showscale=False,
+        template="plotly_dark",
+        xaxis_title="Gravity (normalised)",
         yaxis={"categoryorder": "total ascending"},
+        title=f"Top 15 Gravity Corridors for {selected[:30]}",
         height=400, margin=dict(l=10, r=10, t=50, b=10),
     )
     st.plotly_chart(fig_ac, width="stretch")
@@ -1021,7 +1024,7 @@ elif page == "🔍 Area Deep-Dive":
                     x="VAL", y="COMM_LABEL", orientation="h",
                     color="VAL",
                     color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-                    labels={"VAL": "Freight Value ($K)", "COMM_LABEL": ""},
+                    labels={"VAL": "Value ($K)", "COMM_LABEL": ""},
                     title=f"Top Commodities by Value — {selected[:28]}",
                 )
                 fig_cv.update_layout(template="plotly_dark", coloraxis_showscale=False,
