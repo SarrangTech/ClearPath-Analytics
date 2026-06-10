@@ -1282,7 +1282,7 @@ elif page == "📦 Commodity Risk":
                 fig_tcv.update_layout(template="plotly_dark", coloraxis_showscale=False,
                                       yaxis={"categoryorder": "total ascending", "title": ""},
                                       height=520, margin=dict(l=300, r=20, t=50, b=60))
-                fig_tcv.update_xaxes(title_text="Freight Value ($K)", nticks=4, tickformat="~s", tickangle=0)
+                fig_tcv.update_xaxes(title_text="Freight Value ($K)", nticks=3, tickformat="~s", tickangle=0)
                 st.plotly_chart(fig_tcv, use_container_width=True)
 
             with col_t2:
