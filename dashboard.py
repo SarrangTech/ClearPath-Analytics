@@ -1121,12 +1121,12 @@ elif page == "📦 Commodity Risk":
                     yaxis={"categoryorder": "total ascending", "title": "", "tickfont": {"size": 11}},
                     height=580, margin=dict(l=300, r=20, t=50, b=60),
                 )
-                fig_tv.update_xaxes(title_text="Freight Value ($K)", nticks=5, tickangle=-30)
+                fig_tv.update_xaxes(title_text="Freight Value ($K)", nticks=4, tickformat="~s", tickangle=0)
                 st.plotly_chart(fig_tv, use_container_width=True)
 
             with col_r:
                 fig_tt = px.bar(
-                    top_by_ton.sort_values("TON"),
+                    top_by_val.sort_values("TON"),
                     x="TON", y="COMM_SHORT", orientation="h",
                     color="TON",
                     color_continuous_scale=["#4a90d9", "#2ca02c", "#d62728"],
@@ -1138,7 +1138,7 @@ elif page == "📦 Commodity Risk":
                     yaxis={"categoryorder": "total ascending", "title": "", "tickfont": {"size": 11}},
                     height=580, margin=dict(l=300, r=20, t=50, b=60),
                 )
-                fig_tt.update_xaxes(title_text="Tonnage (K tons)", nticks=5, tickangle=-30)
+                fig_tt.update_xaxes(title_text="Tonnage (K tons)", nticks=4, tickformat="~s", tickangle=0)
                 st.plotly_chart(fig_tt, use_container_width=True)
 
             st.divider()
