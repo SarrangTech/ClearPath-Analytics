@@ -338,9 +338,9 @@ elif page == "🗺️ Network Map":
     with col_ctrl2:
         show_edges = st.checkbox("Show edges", value=True)
     with col_ctrl3:
-        high_only_edges = st.checkbox("HIGH-adjacent edges only", value=True)
+        high_only_edges = st.checkbox("HIGH-adjacent edges only", value=False)
     with col_ctrl4:
-        gravity_threshold = st.slider("Min gravity for edges", 0.0, 1.0, 0.0, 0.05)
+        gravity_threshold = st.slider("Min gravity for edges", 0.0, 0.5, 0.0, 0.02)
 
     # Filter nodes
     visible_nodes = node_meta[node_meta["tier"].isin(show_tiers)]
@@ -364,16 +364,16 @@ elif page == "🗺️ Network Map":
             gnorm = d.get("gravity_norm", 0)
             if gnorm < gravity_threshold:
                 continue
-            # Color edges by gravity: blue (low) → orange (mid) → red (high)
-            r = int(60 + 195 * gnorm)
-            g = int(100 - 60 * gnorm)
-            b = int(200 - 180 * gnorm)
+            # Color edges: blue (low gravity) → orange → red (high gravity)
+            er = int(60 + 195 * gnorm)
+            eg = int(100 - 60 * gnorm)
+            eb = int(200 - 180 * gnorm)
             edge_traces.append(go.Scattergeo(
                 lon=[u_lon, v_lon, None],
                 lat=[u_lat, v_lat, None],
                 mode="lines",
-                line=dict(width=0.4 + 2.5 * gnorm, color=f"rgba({r},{g},{b},0.7)"),
-                opacity=0.3 + 0.5 * gnorm,
+                line=dict(width=0.4 + 2.5 * gnorm, color=f"rgba({er},{eg},{eb},0.75)"),
+                opacity=0.35 + 0.5 * gnorm,
                 hoverinfo="none",
                 showlegend=False,
             ))
