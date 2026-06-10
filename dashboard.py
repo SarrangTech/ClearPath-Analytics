@@ -1116,11 +1116,17 @@ elif page == "📦 Commodity Risk":
                     labels={"VAL": "Total Freight Value ($K)", "COMM_LABEL": ""},
                     title="Top 20 Commodities by Total Freight Value",
                 )
-                fig_tv.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                     yaxis={"categoryorder": "total ascending"},
-                                     xaxis={"tickformat": ",.0s", "tickangle": 0},
-                                     height=560, margin=dict(l=220, r=20, t=50, b=80))
-                fig_tv.update_xaxes(title_text="Freight Value ($K)")
+                fig_tv.update_layout(
+                    template="plotly_dark", coloraxis_showscale=False,
+                    yaxis={"categoryorder": "total ascending", "title": ""},
+                    height=560, margin=dict(l=220, r=20, t=50, b=60),
+                )
+                fig_tv.update_xaxes(
+                    title_text="Freight Value ($K)",
+                    nticks=5,
+                    tickformat=",.0f",
+                    tickangle=-30,
+                )
                 st.plotly_chart(fig_tv, use_container_width=True)
 
             with col_r:
@@ -1132,11 +1138,17 @@ elif page == "📦 Commodity Risk":
                     labels={"TON": "Total Tonnage (K tons)", "COMM_LABEL": ""},
                     title="Top 20 Commodities by Total Tonnage (K tons)",
                 )
-                fig_tt.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                     yaxis={"categoryorder": "total ascending"},
-                                     xaxis={"tickformat": ",.0s", "tickangle": 0},
-                                     height=560, margin=dict(l=220, r=20, t=50, b=80))
-                fig_tt.update_xaxes(title_text="Tonnage (K tons)")
+                fig_tt.update_layout(
+                    template="plotly_dark", coloraxis_showscale=False,
+                    yaxis={"categoryorder": "total ascending", "title": ""},
+                    height=560, margin=dict(l=220, r=20, t=50, b=60),
+                )
+                fig_tt.update_xaxes(
+                    title_text="Tonnage (K tons)",
+                    nticks=5,
+                    tickformat=",.0f",
+                    tickangle=-30,
+                )
                 st.plotly_chart(fig_tt, use_container_width=True)
 
             st.divider()
