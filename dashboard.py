@@ -515,13 +515,13 @@ elif page == "💥 Failure Simulation":
             text="label",
             title="Economic Cost of Single-Node Failure (sorted by cost)",
         )
-        fig_cost.update_traces(textposition="outside")
+        fig_cost.update_traces(textposition="outside", cliponaxis=False)
         fig_cost.update_layout(
             template="plotly_dark",
             coloraxis_showscale=False,
             yaxis={"categoryorder": "total ascending"},
             height=500,
-            margin=dict(l=10, r=80, t=50, b=10),
+            margin=dict(l=10, r=140, t=50, b=10),
         )
         st.plotly_chart(fig_cost, width="stretch")
 
