@@ -881,7 +881,7 @@ elif page == "🔍 Area Deep-Dive":
 
     # Extra commodity metrics — compute dominant commodity live to avoid 'All Commodities' artifact
     if "num_commodities" in row.index:
-        cx1, cx2, cx3 = st.columns(3)
+        cx1, cx2, cx3, _ = st.columns(4)
         cx1.metric("Commodities Handled", int(row["num_commodities"]) if pd.notna(row.get("num_commodities")) else "—")
         if not freight_df.empty:
             _area_comm = freight_df[
@@ -1038,7 +1038,7 @@ elif page == "🔍 Area Deep-Dive":
                     x="TON", y="COMM_LABEL", orientation="h",
                     color="TON",
                     color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-                    labels={"TON": "Tonnage (K tons)", "COMM_LABEL": ""},
+                    labels={"TON": "Tonnage (K)", "COMM_LABEL": ""},
                     title=f"Top Commodities by Tonnage — {selected[:28]}",
                 )
                 fig_ct.update_layout(template="plotly_dark", coloraxis_showscale=False,
