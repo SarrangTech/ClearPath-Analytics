@@ -225,7 +225,6 @@ if page == "📊 Overview":
     selected_tiers = st.multiselect(
         "Filter by Risk Tier", ["HIGH", "MEDIUM", "LOW"],
         default=["HIGH", "MEDIUM", "LOW"],
-        horizontal=True,
     )
     filtered_df = node_meta[node_meta["tier"].isin(selected_tiers)]
 
