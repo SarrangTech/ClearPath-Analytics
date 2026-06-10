@@ -1100,17 +1100,16 @@ elif page == "📦 Commodity Risk":
                 (freight_df["COMM_LABEL"] != "All Commodities") &
                 (freight_df["COMM"] != "0000")
             ].copy()
-            top_comm = (
-                cfs_only.groupby("COMM_LABEL")[["VAL", "TON"]]
-                .sum().reset_index()
-                .nlargest(20, "VAL")
-            )
-            top_comm["COMM_SHORT"] = top_comm["COMM_LABEL"].str[:45]
+            comm_agg = cfs_only.groupby("COMM_LABEL")[["VAL", "TON"]].sum().reset_index()
+            top_by_val = comm_agg.nlargest(20, "VAL").copy()
+            top_by_val["COMM_SHORT"] = top_by_val["COMM_LABEL"].str[:45]
+            top_by_ton = comm_agg.nlargest(20, "TON").copy()
+            top_by_ton["COMM_SHORT"] = top_by_ton["COMM_LABEL"].str[:45]
 
             col_l, col_r = st.columns(2)
             with col_l:
                 fig_tv = px.bar(
-                    top_comm.sort_values("VAL"),
+                    top_by_val.sort_values("VAL"),
                     x="VAL", y="COMM_SHORT", orientation="h",
                     color="VAL",
                     color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
@@ -1127,7 +1126,7 @@ elif page == "📦 Commodity Risk":
 
             with col_r:
                 fig_tt = px.bar(
-                    top_comm.sort_values("TON"),
+                    top_by_ton.sort_values("TON"),
                     x="TON", y="COMM_SHORT", orientation="h",
                     color="TON",
                     color_continuous_scale=["#4a90d9", "#2ca02c", "#d62728"],
