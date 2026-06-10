@@ -1334,15 +1334,16 @@ elif page == "📦 Commodity Risk":
                     x="VAL", y="NAME", orientation="h",
                     color="VAL",
                     color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-                    labels={"VAL": "Export Freight Value ($K)", "NAME": "State"},
+                    labels={"VAL": "Export Freight Value ($K)", "NAME": ""},
                     title="Top 20 States by Export Freight Value",
                     text="VAL",
                 )
                 fig_ev.update_traces(texttemplate="%{text:,.0f}", textposition="outside")
                 fig_ev.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                     yaxis={"categoryorder": "total ascending"},
-                                     height=520, margin=dict(l=10, r=80, t=50, b=10))
-                st.plotly_chart(fig_ev, width="stretch")
+                                     yaxis={"categoryorder": "total ascending", "title": ""},
+                                     height=520, margin=dict(l=120, r=100, t=50, b=60))
+                fig_ev.update_xaxes(title_text="Export Freight Value ($K)", nticks=4, tickformat="~s", tickangle=0)
+                st.plotly_chart(fig_ev, use_container_width=True)
 
             with col_e2:
                 fig_et = px.bar(
@@ -1350,13 +1351,14 @@ elif page == "📦 Commodity Risk":
                     x="TON", y="NAME", orientation="h",
                     color="TON",
                     color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-                    labels={"TON": "Export Tonnage (K tons)", "NAME": "State"},
+                    labels={"TON": "Export Tonnage (K tons)", "NAME": ""},
                     title="Top 20 States by Export Tonnage",
                 )
                 fig_et.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                     yaxis={"categoryorder": "total ascending"},
-                                     height=520, margin=dict(l=10, r=10, t=50, b=10))
-                st.plotly_chart(fig_et, width="stretch")
+                                     yaxis={"categoryorder": "total ascending", "title": ""},
+                                     height=520, margin=dict(l=120, r=20, t=50, b=60))
+                fig_et.update_xaxes(title_text="Export Tonnage (K tons)", nticks=4, tickformat="~s", tickangle=0)
+                st.plotly_chart(fig_et, use_container_width=True)
 
             st.divider()
             st.subheader("Export Value Map by State")
