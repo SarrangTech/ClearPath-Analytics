@@ -383,8 +383,8 @@ elif page == "🗺️ Network Map":
                 lon=[u_lon, v_lon, None],
                 lat=[u_lat, v_lat, None],
                 mode="lines",
-                line=dict(width=0.4 + 2.5 * gnorm, color=f"rgba({er},{eg},{eb},0.75)"),
-                opacity=0.35 + 0.5 * gnorm,
+                line=dict(width=1.0 + 2.5 * gnorm, color=f"rgba({er},{eg},{eb},0.85)"),
+                opacity=0.55 + 0.4 * gnorm,
                 hoverinfo="none",
                 showlegend=False,
             ))
