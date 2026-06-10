@@ -221,11 +221,19 @@ if page == "📊 Overview":
 
     st.divider()
 
+    # ── Tier filter for cross-filtering ────────────────────────────────────
+    selected_tiers = st.multiselect(
+        "Filter by Risk Tier", ["HIGH", "MEDIUM", "LOW"],
+        default=["HIGH", "MEDIUM", "LOW"],
+        horizontal=True,
+    )
+    filtered_df = node_meta[node_meta["tier"].isin(selected_tiers)]
+
     col_left, col_right = st.columns([1.6, 1])
 
     with col_left:
         st.subheader("Vulnerability Score by Area")
-        plot_df = node_meta.sort_values("vulnerability_score", ascending=False).head(30).copy()
+        plot_df = filtered_df.sort_values("vulnerability_score", ascending=False).head(30).copy()
         fig = px.bar(
             plot_df,
             x="vulnerability_score",
@@ -235,56 +243,76 @@ if page == "📊 Overview":
             color_discrete_map=TIER_COLOR,
             labels={"vulnerability_score": "Vulnerability Score", "short_name": ""},
             hover_data={"VAL": True, "TON": True, "tier": True},
+            category_orders={"tier": ["HIGH", "MEDIUM", "LOW"]},
         )
+        fig.update_traces(marker_line_width=0)
         fig.update_layout(
             template="plotly_dark",
             yaxis={"categoryorder": "total ascending"},
             legend_title="Risk Tier",
             height=520,
             margin=dict(l=10, r=10, t=10, b=10),
+            bargap=0.25,
         )
         st.plotly_chart(fig, width="stretch")
 
     with col_right:
         st.subheader("Risk Tier Distribution")
-        tier_counts = node_meta["tier"].value_counts().reset_index()
+        tier_counts = filtered_df["tier"].value_counts().reset_index()
         tier_counts.columns = ["Tier", "Count"]
-        fig2 = px.pie(
-            tier_counts,
-            values="Count",
-            names="Tier",
-            color="Tier",
-            color_discrete_map=TIER_COLOR,
-            hole=0.45,
+        # Horizontal bar instead of pie — more readable
+        tier_order = ["HIGH", "MEDIUM", "LOW"]
+        tier_counts["Tier"] = pd.Categorical(tier_counts["Tier"], categories=tier_order, ordered=True)
+        tier_counts = tier_counts.sort_values("Tier")
+        fig2 = go.Figure()
+        for _, r in tier_counts.iterrows():
+            fig2.add_trace(go.Bar(
+                x=[r["Count"]],
+                y=[r["Tier"]],
+                orientation="h",
+                name=r["Tier"],
+                marker_color=TIER_COLOR.get(r["Tier"], "#aaa"),
+                text=[f'{r["Count"]} areas ({r["Count"]/len(filtered_df)*100:.1f}%)'],
+                textposition="inside",
+                insidetextanchor="middle",
+            ))
+        fig2.update_layout(
+            template="plotly_dark", height=160,
+            margin=dict(l=10, r=10, t=10, b=10),
+            showlegend=False, barmode="stack",
+            xaxis=dict(showticklabels=False, showgrid=False),
+            yaxis=dict(showgrid=False),
+            plot_bgcolor="rgba(0,0,0,0)",
         )
-        fig2.update_layout(template="plotly_dark", height=260,
-                           margin=dict(l=10, r=10, t=10, b=10))
         st.plotly_chart(fig2, width="stretch")
 
         st.subheader("Value vs Tonnage")
         fig3 = px.scatter(
-            node_meta,
+            filtered_df,
             x="VAL",
             y="TON",
             color="tier",
             color_discrete_map=TIER_COLOR,
             hover_name="short_name",
             size="vulnerability_score",
-            size_max=20,
+            size_max=22,
             labels={"VAL": "Freight Value ($K)", "TON": "Tonnage (K tons)"},
+            category_orders={"tier": ["HIGH", "MEDIUM", "LOW"]},
         )
-        fig3.update_layout(template="plotly_dark", height=260,
-                           margin=dict(l=10, r=10, t=10, b=10),
-                           showlegend=False)
+        fig3.update_layout(
+            template="plotly_dark", height=300,
+            margin=dict(l=10, r=10, t=10, b=10),
+            showlegend=False,
+        )
         st.plotly_chart(fig3, width="stretch")
 
     st.divider()
     st.subheader("All CFS Areas — Full Data Table")
     display_cols = ["short_name", "tier", "vulnerability_score", "VAL", "TON",
                     "nearest_seaport", "nearest_seaport_miles", "is_metro"]
-    available = [c for c in display_cols if c in node_meta.columns]
+    available = [c for c in display_cols if c in filtered_df.columns]
     st.dataframe(
-        node_meta[available].sort_values("vulnerability_score", ascending=False)
+        filtered_df[available].sort_values("vulnerability_score", ascending=False)
         .rename(columns={"short_name": "Area", "tier": "Risk Tier",
                          "vulnerability_score": "Vuln Score",
                          "VAL": "Value ($K)", "TON": "Tonnage (K tons)",
@@ -303,7 +331,7 @@ elif page == "🗺️ Network Map":
     st.title("🗺️ Freight Network Map")
     st.caption("K=8 nearest-neighbour graph · 134 nodes · edges weighted by distance and gravity")
 
-    col_ctrl1, col_ctrl2, col_ctrl3 = st.columns(3)
+    col_ctrl1, col_ctrl2, col_ctrl3, col_ctrl4 = st.columns(4)
     with col_ctrl1:
         show_tiers = st.multiselect(
             "Show tiers", ["HIGH", "MEDIUM", "LOW"],
@@ -312,6 +340,8 @@ elif page == "🗺️ Network Map":
         show_edges = st.checkbox("Show edges", value=True)
     with col_ctrl3:
         high_only_edges = st.checkbox("HIGH-adjacent edges only", value=True)
+    with col_ctrl4:
+        gravity_threshold = st.slider("Min gravity for edges", 0.0, 1.0, 0.0, 0.05)
 
     # Filter nodes
     visible_nodes = node_meta[node_meta["tier"].isin(show_tiers)]
@@ -333,12 +363,18 @@ elif page == "🗺️ Network Map":
                    for x in [u_lat, u_lon, v_lat, v_lon]):
                 continue
             gnorm = d.get("gravity_norm", 0)
+            if gnorm < gravity_threshold:
+                continue
+            # Color edges by gravity: blue (low) → orange (mid) → red (high)
+            r = int(60 + 195 * gnorm)
+            g = int(100 - 60 * gnorm)
+            b = int(200 - 180 * gnorm)
             edge_traces.append(go.Scattergeo(
                 lon=[u_lon, v_lon, None],
                 lat=[u_lat, v_lat, None],
                 mode="lines",
-                line=dict(width=0.5 + 1.5 * gnorm, color="#ff4444"),
-                opacity=0.25 + 0.4 * gnorm,
+                line=dict(width=0.4 + 2.5 * gnorm, color=f"rgba({r},{g},{b},0.7)"),
+                opacity=0.3 + 0.5 * gnorm,
                 hoverinfo="none",
                 showlegend=False,
             ))
@@ -421,8 +457,8 @@ elif page == "🗺️ Network Map":
     col_i4.info("**🟢 Teal diamonds** = ports / intermodal hubs")
 
     st.caption(
-        "Edge thickness and opacity scale with gravity score — thicker red lines indicate "
-        "higher-value freight corridors. Toggle 'HIGH-adjacent edges only' to focus on critical links."
+        "Edge color and thickness ∝ gravity score — blue=low gravity, orange=medium, red=high. "
+        "Use the gravity slider to reveal only the strongest corridors."
     )
 
 
