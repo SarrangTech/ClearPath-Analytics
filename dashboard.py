@@ -1131,7 +1131,7 @@ elif page == "📦 Commodity Risk":
                     color="TON",
                     color_continuous_scale=["#4a90d9", "#2ca02c", "#d62728"],
                     labels={"TON": "Tonnage (K tons)", "COMM_SHORT": ""},
-                    title="Top 20 Commodities by Total Tonnage (K tons)",
+                    title="Tonnage of Top 20 High-Value Commodities",
                 )
                 fig_tt.update_layout(
                     template="plotly_dark", coloraxis_showscale=False,
