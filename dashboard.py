@@ -1276,13 +1276,14 @@ elif page == "📦 Commodity Risk":
                     x="VAL", y="COMM_LABEL", orientation="h",
                     color="VAL",
                     color_continuous_scale=["#4a90d9", "#2ca02c", "#ff7f0e"],
-                    labels={"VAL": "Freight Value ($K)", "COMM_LABEL": "Commodity"},
+                    labels={"VAL": "Freight Value ($K)", "COMM_LABEL": ""},
                     title="Top 15 Temp-Controlled Commodities by Value",
                 )
                 fig_tcv.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                      yaxis={"categoryorder": "total ascending"},
-                                      height=440, margin=dict(l=10, r=10, t=50, b=10))
-                st.plotly_chart(fig_tcv, width="stretch")
+                                      yaxis={"categoryorder": "total ascending", "title": ""},
+                                      height=520, margin=dict(l=300, r=20, t=50, b=60))
+                fig_tcv.update_xaxes(title_text="Freight Value ($K)", nticks=4, tickformat="~s", tickangle=0)
+                st.plotly_chart(fig_tcv, use_container_width=True)
 
             with col_t2:
                 fig_tct = px.bar(
@@ -1290,13 +1291,14 @@ elif page == "📦 Commodity Risk":
                     x="TON", y="COMM_LABEL", orientation="h",
                     color="TON",
                     color_continuous_scale=["#4a90d9", "#2ca02c", "#ff7f0e"],
-                    labels={"TON": "Tonnage (K tons)", "COMM_LABEL": "Commodity"},
+                    labels={"TON": "Tonnage (K tons)", "COMM_LABEL": ""},
                     title="Top 15 Temp-Controlled Commodities by Tonnage",
                 )
                 fig_tct.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                      yaxis={"categoryorder": "total ascending"},
-                                      height=440, margin=dict(l=10, r=10, t=50, b=10))
-                st.plotly_chart(fig_tct, width="stretch")
+                                      yaxis={"categoryorder": "total ascending", "title": ""},
+                                      height=520, margin=dict(l=300, r=20, t=50, b=60))
+                fig_tct.update_xaxes(title_text="Tonnage (K tons)", nticks=4, tickformat="~s", tickangle=0)
+                st.plotly_chart(fig_tct, use_container_width=True)
 
             st.divider()
             tc_all = temp_df[temp_df["COMM_LABEL"] == "All Commodities"].drop_duplicates(subset=["VAL"])
