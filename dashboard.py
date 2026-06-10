@@ -17,7 +17,7 @@ import streamlit as st
 
 warnings.filterwarnings("ignore")
 
-# ── Page config ──────────────────────────────────────────────────────────────
+# ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="ClearPath Analytics",
     page_icon="🚚",
@@ -39,6 +39,7 @@ st.markdown("""
     .med-card   { border-left-color: #ff7f0e; }
     .low-card   { border-left-color: #2ca02c; }
     h1, h2, h3 { color: #e0e0e0; }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -51,7 +52,7 @@ GRAVITY_FILE = os.path.join(BASE, "supply_chain_data", "03_outputs",  "corridor_
 RISK_FILE    = os.path.join(BASE, "supply_chain_data", "03_outputs",  "risk_tier_output.csv")
 PORT_FILE    = os.path.join(BASE, "supply_chain_data", "05_features", "ntad_ports.csv")
 SIM_FILE     = os.path.join(BASE, "supply_chain_data", "06_network_outputs", "failure_simulation_results.csv")
-DETAIL_FILE  = os.path.join(BASE, "supply_chain_data", "06_network_outputs", "rerouting_detail.csv")
+DETAIL_FILE  = os.path.join(BASE, "supply_chain_data", "06_network_outputs", "05_rerouting_detail.csv")
 
 K_NEIGHBORS       = 8
 COST_PER_TON_MILE = 0.08
@@ -72,7 +73,7 @@ def load_data():
     def short_name(n):
         n = n.split(";")[0].strip()
         n = n.replace(" CFS Area", "").replace(" (part)", "")
-        return (n[:35] + "…") if len(n) > 35 else n
+        return (n[:40] + "…") if len(n) > 40 else n
 
     TIER_MAP = {"High": "HIGH", "Medium": "MEDIUM", "Low": "LOW"}
     risk_df["tier"] = risk_df["risk_tier"].map(TIER_MAP)
@@ -166,10 +167,14 @@ low_df    = node_meta[node_meta["tier"] == "LOW"]
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.image("https://raw.githubusercontent.com/streamlit/streamlit/develop/lib/tests/streamlit/image_test_data/sparky.png",
-             width=40) if False else None
-    st.title("🚚 ClearPath Analytics")
-    st.caption("Supply Chain Vulnerability · MISM 6214 · Team 1")
+    st.markdown("## 🚚 ClearPath Analytics")
+    st.markdown(
+        "<span style='color:#aaa;font-size:13px;'>"
+        "Supply Chain Vulnerability Analysis<br>"
+        "MISM 6214 · Team 1 · Shreya Pandey"
+        "</span>",
+        unsafe_allow_html=True,
+    )
     st.divider()
 
     page = st.radio(
@@ -183,17 +188,22 @@ with st.sidebar:
     )
 
     st.divider()
-    st.caption("**Data:** 2022 US Census CFS")
-    st.caption("**Network:** K=8 nearest-neighbour")
-    st.caption("**Risk Tier:** RF Classifier (90.3% LOOCV)")
-    st.caption("**Cost:** $0.08/ton-mile (BTS)")
+    st.markdown("**📦 Dataset**")
+    st.caption("2022 US Census Commodity Flow Survey · 134 CFS Areas")
+    st.markdown("**🔬 Methodology**")
+    st.caption("K=8 Nearest-Neighbour Graph · RF Classifier (90.3% LOOCV) · Dijkstra Rerouting")
+    st.markdown("**💵 Cost Assumption**")
+    st.caption("$0.08/ton-mile (BTS standard rate)")
+    st.divider()
+    st.caption("Use the menu above to explore the analysis.")
+
 
 # =============================================================================
 # PAGE 1 — OVERVIEW
 # =============================================================================
 if page == "📊 Overview":
     st.title("📊 Supply Chain Vulnerability Overview")
-    st.caption("134 CFS areas · 2022 US Census Commodity Flow Survey")
+    st.caption("134 CFS areas · 2022 US Census Commodity Flow Survey · RF Classifier risk tiers")
 
     # KPI row
     col1, col2, col3, col4 = st.columns(4)
@@ -239,7 +249,6 @@ if page == "📊 Overview":
         st.subheader("Risk Tier Distribution")
         tier_counts = node_meta["tier"].value_counts().reset_index()
         tier_counts.columns = ["Tier", "Count"]
-        tier_counts["color"] = tier_counts["Tier"].map(TIER_COLOR)
         fig2 = px.pie(
             tier_counts,
             values="Count",
@@ -292,7 +301,7 @@ if page == "📊 Overview":
 # =============================================================================
 elif page == "🗺️ Network Map":
     st.title("🗺️ Freight Network Map")
-    st.caption("K=8 nearest-neighbour graph · 134 nodes · edges weighted by distance")
+    st.caption("K=8 nearest-neighbour graph · 134 nodes · edges weighted by distance and gravity")
 
     col_ctrl1, col_ctrl2, col_ctrl3 = st.columns(3)
     with col_ctrl1:
@@ -379,6 +388,10 @@ elif page == "🗺️ Network Map":
     fig = go.Figure(data=edge_traces + node_traces + [port_trace])
     fig.update_layout(
         template="plotly_dark",
+        title=dict(
+            text="US Freight Network — K=8 Nearest Neighbour Graph",
+            font=dict(size=15), x=0.01,
+        ),
         geo=dict(
             scope="north america",
             projection_type="albers usa",
@@ -394,17 +407,22 @@ elif page == "🗺️ Network Map":
             bordercolor="#4a90d9",
             borderwidth=1,
             font=dict(color="white"),
+            title=dict(text="Risk Tier", font=dict(color="white")),
         ),
-        margin=dict(l=0, r=0, t=0, b=0),
+        margin=dict(l=0, r=0, t=40, b=0),
         height=600,
     )
     st.plotly_chart(fig, width="stretch")
 
-    st.info(
-        f"**{len(visible_nodes)}** nodes visible · "
-        f"**{G.number_of_edges()}** total K-NN edges · "
-        "Node size ∝ vulnerability score · "
-        "🟢 Teal diamonds = ports/intermodal hubs"
+    col_i1, col_i2, col_i3, col_i4 = st.columns(4)
+    col_i1.info(f"**{len(visible_nodes)}** nodes visible")
+    col_i2.info(f"**{G.number_of_edges()}** K-NN edges total")
+    col_i3.info("**Node size** ∝ vulnerability score")
+    col_i4.info("**🟢 Teal diamonds** = ports / intermodal hubs")
+
+    st.caption(
+        "Edge thickness and opacity scale with gravity score — thicker red lines indicate "
+        "higher-value freight corridors. Toggle 'HIGH-adjacent edges only' to focus on critical links."
     )
 
 
@@ -415,7 +433,7 @@ elif page == "💥 Failure Simulation":
     st.title("💥 Failure Simulation Results")
     st.caption(
         "Each HIGH-tier area is removed from the K=8 NN graph. "
-        "OD pairs that lose their shortest path are rerouted. "
+        "OD pairs that lose their shortest path are rerouted via Dijkstra. "
         "Cost = extra miles × tonnage × $0.08/ton-mile."
     )
 
@@ -435,7 +453,7 @@ elif page == "💥 Failure Simulation":
     col_a, col_b = st.columns(2)
 
     with col_a:
-        st.subheader("Rerouting Cost by Area")
+        st.subheader("Rerouting Cost by Failed Area")
         plot_sim = sim_df.sort_values("rerouting_cost_B", ascending=True).copy()
         plot_sim["label"] = plot_sim["rerouting_cost_B"].apply(
             lambda x: f"${x:.2f}B" if x > 0 else "—")
@@ -446,23 +464,23 @@ elif page == "💥 Failure Simulation":
             orientation="h",
             color="rerouting_cost_B",
             color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-            labels={"rerouting_cost_B": "Rerouting Cost ($B)", "failed_area": ""},
-            hover_data={"affected_od_pairs": True, "extra_miles_total": True,
-                        "vuln_score": True},
+            labels={"rerouting_cost_B": "Rerouting Cost ($B)", "failed_area": "CFS Area"},
+            hover_data={"affected_od_pairs": True, "extra_miles_total": True, "vuln_score": True},
             text="label",
+            title="Economic Cost of Single-Node Failure (sorted by cost)",
         )
         fig_cost.update_traces(textposition="outside")
         fig_cost.update_layout(
             template="plotly_dark",
             coloraxis_showscale=False,
             yaxis={"categoryorder": "total ascending"},
-            height=480,
-            margin=dict(l=10, r=80, t=10, b=10),
+            height=500,
+            margin=dict(l=10, r=80, t=50, b=10),
         )
         st.plotly_chart(fig_cost, width="stretch")
 
     with col_b:
-        st.subheader("OD Pairs Disrupted by Area")
+        st.subheader("Number of OD Pairs Disrupted per Failure")
         plot_od = sim_df.sort_values("affected_od_pairs", ascending=True).copy()
         fig_od = px.bar(
             plot_od,
@@ -471,42 +489,149 @@ elif page == "💥 Failure Simulation":
             orientation="h",
             color="affected_od_pairs",
             color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-            labels={"affected_od_pairs": "OD Pairs Disrupted", "failed_area": ""},
+            labels={"affected_od_pairs": "OD Pairs Disrupted", "failed_area": "CFS Area"},
             text="affected_od_pairs",
+            title="Origin-Destination Pairs Forced to Reroute",
         )
         fig_od.update_traces(textposition="outside")
         fig_od.update_layout(
             template="plotly_dark",
             coloraxis_showscale=False,
             yaxis={"categoryorder": "total ascending"},
-            height=480,
-            margin=dict(l=10, r=60, t=10, b=10),
+            height=500,
+            margin=dict(l=10, r=60, t=50, b=10),
         )
         st.plotly_chart(fig_od, width="stretch")
 
     st.divider()
+
     st.subheader("Vulnerability Score vs Rerouting Cost")
-    st.caption("A high vulnerability score does not always mean the highest rerouting cost — network position matters.")
+    st.caption(
+        "Key insight: network position (structural centrality) matters more than vulnerability score alone. "
+        "Illinois Remainder has a low score but the highest rerouting cost."
+    )
     fig_scatter = px.scatter(
         sim_df,
         x="vuln_score",
         y="rerouting_cost_B",
         size="affected_od_pairs",
-        size_max=35,
+        size_max=40,
         text="failed_area",
         color="rerouting_cost_B",
         color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-        labels={"vuln_score": "Vulnerability Score",
-                "rerouting_cost_B": "Rerouting Cost ($B)",
-                "affected_od_pairs": "OD Pairs Disrupted"},
+        labels={
+            "vuln_score": "Vulnerability Score (RF Classifier)",
+            "rerouting_cost_B": "Rerouting Cost ($B)",
+            "affected_od_pairs": "OD Pairs Disrupted",
+        },
+        title="Vulnerability Score vs Economic Disruption Cost — bubble size = OD pairs disrupted",
     )
     fig_scatter.update_traces(textposition="top center", textfont_size=9)
     fig_scatter.update_layout(
-        template="plotly_dark", height=420,
+        template="plotly_dark", height=440,
         coloraxis_showscale=False,
-        margin=dict(l=10, r=10, t=10, b=10),
+        margin=dict(l=10, r=10, t=50, b=10),
     )
     st.plotly_chart(fig_scatter, width="stretch")
+
+    # ── Rerouting detail map ─────────────────────────────────────────────────
+    if not detail_df.empty:
+        st.divider()
+        st.subheader("🗺️ Rerouting Impact Map — Top Disrupted Routes")
+        st.caption(
+            "Select a failed area to see which OD pairs were rerouted and by how many extra miles."
+        )
+
+        area_choice = st.selectbox(
+            "Select a failed area to inspect",
+            options=sim_df.sort_values("rerouting_cost_B", ascending=False)["failed_area"].tolist(),
+        )
+
+        sub_detail = detail_df[detail_df["failed_area"] == area_choice].copy()
+        sub_detail = sub_detail[sub_detail["extra_miles"] > 0].sort_values("extra_miles", ascending=False)
+
+        if not sub_detail.empty:
+            col_map, col_tbl = st.columns([1.4, 1])
+
+            with col_map:
+                # Build origin/destination lat-lon from node_meta
+                name_to_coords = dict(zip(node_meta["short_name"],
+                                          zip(node_meta["lat"], node_meta["lon"])))
+
+                top_routes = sub_detail.head(30)
+                route_traces = []
+
+                for _, row in top_routes.iterrows():
+                    o_name = str(row["origin"])[:40]
+                    d_name = str(row["destination"])[:40]
+
+                    # fuzzy match against short_name
+                    o_match = [k for k in name_to_coords if o_name[:15] in k]
+                    d_match = [k for k in name_to_coords if d_name[:15] in k]
+
+                    if not o_match or not d_match:
+                        continue
+
+                    o_lat, o_lon = name_to_coords[o_match[0]]
+                    d_lat, d_lon = name_to_coords[d_match[0]]
+
+                    if any(pd.isna([o_lat, o_lon, d_lat, d_lon])):
+                        continue
+
+                    intensity = min(row["extra_miles"] / (sub_detail["extra_miles"].max() + 1), 1.0)
+                    route_traces.append(go.Scattergeo(
+                        lon=[o_lon, d_lon, None],
+                        lat=[o_lat, d_lat, None],
+                        mode="lines",
+                        line=dict(
+                            width=0.8 + 2.5 * intensity,
+                            color=f"rgba({int(60 + 195*intensity)},68,{int(200-180*intensity)},0.6)",
+                        ),
+                        hoverinfo="none",
+                        showlegend=False,
+                    ))
+
+                # All nodes
+                node_tr = go.Scattergeo(
+                    lon=node_meta["lon"], lat=node_meta["lat"],
+                    mode="markers", name="CFS Areas",
+                    marker=dict(
+                        size=node_meta["vulnerability_score"].apply(lambda s: 5 + s * 14),
+                        color=node_meta["color"], opacity=0.75,
+                        line=dict(width=0.4, color="white"),
+                    ),
+                    text=node_meta["short_name"],
+                    hovertemplate="<b>%{text}</b><extra></extra>",
+                )
+
+                fig_rmap = go.Figure(data=route_traces + [node_tr])
+                fig_rmap.update_layout(
+                    template="plotly_dark",
+                    title=dict(text=f"Top 30 Rerouted OD Pairs — Failed: {area_choice[:35]}", font=dict(size=13), x=0.01),
+                    geo=dict(
+                        scope="north america",
+                        projection_type="albers usa",
+                        showland=True, landcolor="#1a1a2e",
+                        showocean=True, oceancolor="#0d1117",
+                        showcoastlines=True, coastlinecolor="#333",
+                    ),
+                    margin=dict(l=0, r=0, t=40, b=0),
+                    height=440,
+                )
+                st.plotly_chart(fig_rmap, width="stretch")
+                st.caption("Line thickness and color intensity ∝ extra miles added by the failure.")
+
+            with col_tbl:
+                st.markdown(f"**Top rerouted routes — {area_choice[:30]}**")
+                show_cols = [c for c in ["origin", "destination", "extra_miles", "orig_miles", "new_miles"] if c in sub_detail.columns]
+                st.dataframe(
+                    sub_detail[show_cols].head(25).rename(columns={
+                        "origin": "Origin", "destination": "Destination",
+                        "extra_miles": "Extra Miles", "orig_miles": "Original Miles",
+                        "new_miles": "New Miles",
+                    }),
+                    width="stretch", height=400,
+                )
 
     st.divider()
     st.subheader("Full Simulation Results Table")
@@ -522,17 +647,6 @@ elif page == "💥 Failure Simulation":
         height=380,
     )
 
-    if not detail_df.empty:
-        st.divider()
-        st.subheader("Per-Corridor Rerouting Detail")
-        area_choice = st.selectbox(
-            "Select a failed area to inspect",
-            options=sorted(detail_df["failed_area"].unique()),
-        )
-        sub_detail = detail_df[detail_df["failed_area"] == area_choice].copy()
-        sub_detail = sub_detail.sort_values("extra_miles", ascending=False)
-        st.dataframe(sub_detail, width="stretch", height=300)
-
 
 # =============================================================================
 # PAGE 4 — GRAVITY CORRIDORS
@@ -540,8 +654,9 @@ elif page == "💥 Failure Simulation":
 elif page == "🔗 Gravity Corridors":
     st.title("🔗 Gravity-Weighted Corridor Analysis")
     st.caption(
-        "Gravity = (VAL_origin × VAL_dest) / distance² — "
-        "measures the economic energy of each freight corridor."
+        "Gravity score = (VAL_origin × VAL_dest) / distance² — "
+        "measures the economic energy of each freight corridor. "
+        "Higher gravity = more freight value exchanged per unit distance."
     )
 
     grav_df = gravity_df.copy()
@@ -561,8 +676,8 @@ elif page == "🔗 Gravity Corridors":
         st.subheader(f"Top {n_top} Corridors by Gravity Score")
         top_grav = grav_df.nlargest(n_top, "gravity").copy()
         top_grav["corridor"] = (
-            top_grav["NAME_origin"].str.split(";").str[0].str[:22] + " ↔ " +
-            top_grav["NAME_dest"].str.split(";").str[0].str[:22]
+            top_grav["NAME_origin"].str.split(";").str[0].str[:24] + " ↔ " +
+            top_grav["NAME_dest"].str.split(";").str[0].str[:24]
         )
         fig_grav = px.bar(
             top_grav.sort_values("gravity_norm"),
@@ -571,29 +686,31 @@ elif page == "🔗 Gravity Corridors":
             orientation="h",
             color="gravity_norm",
             color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
-            labels={"gravity_norm": "Gravity (normalised)", "corridor": ""},
+            labels={"gravity_norm": "Gravity (normalised 0–1)", "corridor": "Corridor"},
+            title=f"Top {n_top} Freight Corridors Ranked by Normalised Gravity Score",
         )
         fig_grav.update_layout(
             template="plotly_dark",
             coloraxis_showscale=False,
             yaxis={"categoryorder": "total ascending"},
-            height=520,
-            margin=dict(l=10, r=10, t=10, b=10),
+            height=540,
+            margin=dict(l=10, r=10, t=50, b=10),
         )
         st.plotly_chart(fig_grav, width="stretch")
 
     with col_right:
-        st.subheader("Gravity Distribution")
+        st.subheader("Gravity Score Distribution")
         fig_hist = px.histogram(
             grav_df[grav_df["gravity"] > 0],
             x="gravity_norm",
             nbins=50,
             color_discrete_sequence=["#4a90d9"],
             labels={"gravity_norm": "Normalised Gravity Score"},
+            title="Most corridors have low gravity — a few dominate",
         )
         fig_hist.update_layout(
-            template="plotly_dark", height=260,
-            margin=dict(l=10, r=10, t=10, b=10),
+            template="plotly_dark", height=280,
+            margin=dict(l=10, r=10, t=50, b=10),
         )
         st.plotly_chart(fig_hist, width="stretch")
 
@@ -605,11 +722,12 @@ elif page == "🔗 Gravity Corridors":
             y="gravity_norm",
             opacity=0.4,
             color_discrete_sequence=["#4a90d9"],
-            labels={"distance_miles": "Distance (miles)", "gravity_norm": "Gravity (norm)"},
+            labels={"distance_miles": "Distance (miles)", "gravity_norm": "Gravity (normalised)"},
+            title="Gravity decays with distance — short, high-value corridors dominate",
         )
         fig_gd.update_layout(
-            template="plotly_dark", height=260,
-            margin=dict(l=10, r=10, t=10, b=10),
+            template="plotly_dark", height=280,
+            margin=dict(l=10, r=10, t=50, b=10),
         )
         st.plotly_chart(fig_gd, width="stretch")
 
@@ -662,6 +780,10 @@ elif page == "🔗 Gravity Corridors":
     fig_map_g = go.Figure(data=edge_traces_g + [node_trace_g])
     fig_map_g.update_layout(
         template="plotly_dark",
+        title=dict(
+            text=f"Top {n_map} Gravity Corridors — line thickness ∝ gravity score",
+            font=dict(size=13), x=0.01,
+        ),
         geo=dict(
             scope="north america",
             projection_type="albers usa",
@@ -670,10 +792,11 @@ elif page == "🔗 Gravity Corridors":
             showcoastlines=True, coastlinecolor="#333",
             showcountries=True, countrycolor="#333",
         ),
-        margin=dict(l=0, r=0, t=0, b=0),
-        height=520,
+        margin=dict(l=0, r=0, t=40, b=0),
+        height=540,
     )
     st.plotly_chart(fig_map_g, width="stretch")
+    st.caption("Node color = risk tier (red=HIGH, orange=MEDIUM, blue=LOW). Node size ∝ vulnerability score.")
 
 
 # =============================================================================
@@ -681,12 +804,12 @@ elif page == "🔗 Gravity Corridors":
 # =============================================================================
 elif page == "🔍 Area Deep-Dive":
     st.title("🔍 CFS Area Deep-Dive")
-    st.caption("Select any CFS area to explore its network position, corridors, and risk profile.")
+    st.caption("Select any CFS area to explore its network position, corridors, commodity profile, and risk.")
 
     area_list = sorted(node_meta["short_name"].tolist())
     selected  = st.selectbox("Select a CFS area", area_list)
 
-    row = node_meta[node_meta["short_name"] == selected].iloc[0]
+    row    = node_meta[node_meta["short_name"] == selected].iloc[0]
     geo_id = row["GEO_ID"]
 
     tier_col = TIER_COLOR.get(row["tier"], "#6baed6")
@@ -705,11 +828,18 @@ elif page == "🔍 Area Deep-Dive":
     c3.metric("Freight Value", f"${row['VAL']/1e3:,.1f}B")
     c4.metric("Tonnage", f"{row['TON']/1e6:.2f}B tons")
 
+    # Extra commodity metrics if available
+    if "num_commodities" in row.index and "dominant_commodity" in row.index:
+        cx1, cx2, cx3 = st.columns(3)
+        cx1.metric("Commodities Handled", int(row["num_commodities"]) if pd.notna(row.get("num_commodities")) else "—")
+        cx2.metric("Dominant Commodity", str(row["dominant_commodity"])[:30] if pd.notna(row.get("dominant_commodity")) else "—")
+        cx3.metric("Value/Ton Ratio", f"{row['val_ton_ratio']:.2f}" if pd.notna(row.get("val_ton_ratio")) else "—")
+
     st.divider()
     col_l, col_r = st.columns(2)
 
     with col_l:
-        st.subheader("Network Neighbours")
+        st.subheader("Network Neighbours (K=8)")
         neighbours = []
         if geo_id in G:
             for nbr in G.neighbors(geo_id):
@@ -723,28 +853,56 @@ elif page == "🔍 Area Deep-Dive":
                 })
         if neighbours:
             nbr_df = pd.DataFrame(neighbours).sort_values("Distance (mi)")
-            st.dataframe(nbr_df, width="stretch", height=280)
+            fig_nbr = px.bar(
+                nbr_df,
+                x="Distance (mi)",
+                y="Neighbour",
+                orientation="h",
+                color="Tier",
+                color_discrete_map=TIER_COLOR,
+                labels={"Distance (mi)": "Distance (miles)", "Neighbour": ""},
+                title=f"K-NN Neighbours of {selected[:30]}",
+            )
+            fig_nbr.update_layout(
+                template="plotly_dark", height=320,
+                margin=dict(l=10, r=10, t=50, b=10),
+            )
+            st.plotly_chart(fig_nbr, width="stretch")
+            st.dataframe(nbr_df, width="stretch", height=220)
         else:
             st.info("Node not in graph.")
 
     with col_r:
-        st.subheader("Port Proximity")
+        st.subheader("Port & Seaport Proximity")
         port_cols = ["nearest_port", "nearest_port_type", "nearest_port_miles",
                      "nearest_seaport", "nearest_seaport_miles"]
-        avail = [c for c in port_cols if c in row.index]
+        avail = [c for c in port_cols if c in row.index and pd.notna(row[c])]
         for c in avail:
             st.metric(c.replace("_", " ").title(), row[c])
 
+        if not sim_df.empty:
+            sim_row = sim_df[sim_df["geo_id"] == geo_id]
+            if not sim_row.empty:
+                st.divider()
+                st.subheader("Failure Simulation Result")
+                s = sim_row.iloc[0]
+                sc1, sc2, sc3 = st.columns(3)
+                sc1.metric("OD Pairs Disrupted",  int(s["affected_od_pairs"]))
+                sc2.metric("Extra Miles Added",   f"{s['extra_miles_total']:,.0f}")
+                sc3.metric("Rerouting Cost",       f"${s['rerouting_cost_B']:.2f}B")
+            else:
+                st.info("This area was not in the HIGH-tier simulation set.")
+
     st.divider()
 
-    st.subheader("Top Corridors Involving This Area")
+    st.subheader("Top Gravity Corridors Involving This Area")
     area_grav = gravity_df[
         (gravity_df["GEO_ID_origin"] == geo_id) |
         (gravity_df["GEO_ID_dest"]   == geo_id)
     ].copy()
     area_grav["corridor"] = (
-        area_grav["NAME_origin"].str.split(";").str[0].str[:25] + " ↔ " +
-        area_grav["NAME_dest"].str.split(";").str[0].str[:25]
+        area_grav["NAME_origin"].str.split(";").str[0].str[:28] + " ↔ " +
+        area_grav["NAME_dest"].str.split(";").str[0].str[:28]
     )
     top_corridors = area_grav.nlargest(15, "gravity")
     fig_ac = px.bar(
@@ -755,29 +913,21 @@ elif page == "🔍 Area Deep-Dive":
         color="gravity_norm",
         color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
         labels={"gravity_norm": "Gravity (normalised)", "corridor": ""},
+        title=f"Top 15 Gravity Corridors for {selected[:30]}",
     )
     fig_ac.update_layout(
         template="plotly_dark", coloraxis_showscale=False,
         yaxis={"categoryorder": "total ascending"},
-        height=360, margin=dict(l=10, r=10, t=10, b=10),
+        height=400, margin=dict(l=10, r=10, t=50, b=10),
     )
     st.plotly_chart(fig_ac, width="stretch")
 
-    if not sim_df.empty:
-        sim_row = sim_df[sim_df["geo_id"] == geo_id]
+    if not detail_df.empty:
+        sim_row = sim_df[sim_df["geo_id"] == geo_id] if not sim_df.empty else pd.DataFrame()
         if not sim_row.empty:
-            st.divider()
-            st.subheader("Failure Simulation Result")
-            s = sim_row.iloc[0]
-            sc1, sc2, sc3 = st.columns(3)
-            sc1.metric("OD Pairs Disrupted",  int(s["affected_od_pairs"]))
-            sc2.metric("Extra Miles Added",   f"{s['extra_miles_total']:,.0f}")
-            sc3.metric("Rerouting Cost",       f"${s['rerouting_cost_B']:.2f}B")
-
-            if not detail_df.empty:
-                area_detail = detail_df[detail_df["failed_area"] == s["failed_area"]]\
-                    .sort_values("extra_miles", ascending=False)
-                if not area_detail.empty:
-                    st.subheader("Most Impacted Routes")
-                    st.dataframe(area_detail.head(20), width="stretch", height=280)
-
+            area_detail = detail_df[detail_df["failed_area"] == sim_row.iloc[0]["failed_area"]]\
+                .sort_values("extra_miles", ascending=False)
+            if not area_detail.empty:
+                st.divider()
+                st.subheader("Most Impacted Routes if This Area Fails")
+                st.dataframe(area_detail.head(20), width="stretch", height=280)
