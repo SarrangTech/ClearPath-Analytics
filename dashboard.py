@@ -1123,8 +1123,8 @@ elif page == "📦 Commodity Risk":
                 )
                 fig_tv.update_xaxes(
                     title_text="Freight Value ($K)",
-                    nticks=5,
-                    tickformat=".2s",
+                    nticks=4,
+                    tickformat="~s",
                     tickangle=0,
                 )
                 st.plotly_chart(fig_tv, use_container_width=True)
@@ -1145,8 +1145,8 @@ elif page == "📦 Commodity Risk":
                 )
                 fig_tt.update_xaxes(
                     title_text="Tonnage (K tons)",
-                    nticks=5,
-                    tickformat=".2s",
+                    nticks=4,
+                    tickformat="~s",
                     tickangle=0,
                 )
                 st.plotly_chart(fig_tt, use_container_width=True)
