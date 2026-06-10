@@ -879,11 +879,21 @@ elif page == "🔍 Area Deep-Dive":
     c3.metric("Freight Value", f"${row['VAL']/1e3:,.1f}B")
     c4.metric("Tonnage", f"{row['TON']/1e6:.2f}B tons")
 
-    # Extra commodity metrics if available
-    if "num_commodities" in row.index and "dominant_commodity" in row.index:
+    # Extra commodity metrics — compute dominant commodity live to avoid 'All Commodities' artifact
+    if "num_commodities" in row.index:
         cx1, cx2, cx3 = st.columns(3)
         cx1.metric("Commodities Handled", int(row["num_commodities"]) if pd.notna(row.get("num_commodities")) else "—")
-        cx2.metric("Dominant Commodity", str(row["dominant_commodity"])[:30] if pd.notna(row.get("dominant_commodity")) else "—")
+        if not freight_df.empty:
+            _area_comm = freight_df[
+                (freight_df["GEO_ID"] == geo_id) &
+                (freight_df["COMM"] != "0000") &
+                (freight_df["COMM_LABEL"] != "All Commodities") &
+                (freight_df["VAL"] > 0)
+            ].groupby("COMM_LABEL")["VAL"].sum()
+            _dominant = _area_comm.idxmax() if not _area_comm.empty else "—"
+        else:
+            _dominant = "—"
+        cx2.metric("Dominant Commodity", str(_dominant)[:30])
         cx3.metric("Value/Ton Ratio", f"{row['val_ton_ratio']:.2f}" if pd.notna(row.get("val_ton_ratio")) else "—")
 
     st.divider()
@@ -951,9 +961,18 @@ elif page == "🔍 Area Deep-Dive":
         (gravity_df["GEO_ID_origin"] == geo_id) |
         (gravity_df["GEO_ID_dest"]   == geo_id)
     ].copy()
-    area_grav["corridor"] = (
-        area_grav["NAME_origin"].str.split(";").str[0].str[:28] + " ↔ " +
-        area_grav["NAME_dest"].str.split(";").str[0].str[:28]
+    # Deduplicate: canonical pair key so A->B and B->A count as one corridor
+    area_grav["_pair_key"] = area_grav.apply(
+        lambda r: tuple(sorted([r["GEO_ID_origin"], r["GEO_ID_dest"]])), axis=1
+    )
+    area_grav = area_grav.sort_values("gravity", ascending=False).drop_duplicates("_pair_key")
+    # Put selected area first for consistent label direction
+    area_grav["corridor"] = area_grav.apply(
+        lambda r: (
+            r["NAME_origin"].split(";")[0][:28] + " \u2194 " + r["NAME_dest"].split(";")[0][:28]
+            if r["GEO_ID_origin"] == geo_id
+            else r["NAME_dest"].split(";")[0][:28] + " \u2194 " + r["NAME_origin"].split(";")[0][:28]
+        ), axis=1
     )
     top_corridors = area_grav.nlargest(15, "gravity")
     fig_ac = px.bar(
@@ -1006,8 +1025,9 @@ elif page == "🔍 Area Deep-Dive":
                     title=f"Top Commodities by Value — {selected[:28]}",
                 )
                 fig_cv.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                     height=380, margin=dict(l=10, r=10, t=50, b=10),
-                                     yaxis={"categoryorder": "total ascending"})
+                                     height=380, margin=dict(l=10, r=10, t=50, b=40),
+                                     yaxis={"categoryorder": "total ascending"},
+                                     xaxis={"automargin": True})
                 st.plotly_chart(fig_cv, width="stretch")
             with col_ct:
                 fig_ct = px.bar(
@@ -1019,8 +1039,9 @@ elif page == "🔍 Area Deep-Dive":
                     title=f"Top Commodities by Tonnage — {selected[:28]}",
                 )
                 fig_ct.update_layout(template="plotly_dark", coloraxis_showscale=False,
-                                     height=380, margin=dict(l=10, r=10, t=50, b=10),
-                                     yaxis={"categoryorder": "total ascending"})
+                                     height=380, margin=dict(l=10, r=10, t=50, b=40),
+                                     yaxis={"categoryorder": "total ascending"},
+                                     xaxis={"automargin": True})
                 st.plotly_chart(fig_ct, width="stretch")
         else:
             st.info("No commodity-level data available for this area.")
