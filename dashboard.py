@@ -784,7 +784,9 @@ elif page == "🔗 Gravity Corridors":
     st.subheader("Corridor Map — Top Gravity Corridors")
     n_map = st.slider("Corridors to draw on map", 20, 200, 100)
 
-    top_map = grav_df.nlargest(n_map, "gravity").copy()
+    # Filter to corridors >= 200 miles so lines are visible on a national map
+    map_df = grav_df[grav_df["distance_miles"] >= 200]
+    top_map = map_df.nlargest(n_map, "gravity").copy()
     top_map = top_map.merge(
         cent_df.rename(columns={"GEO_ID": "GEO_ID_origin",
                                 "INTPTLAT": "lat_o", "INTPTLON": "lon_o"}),
