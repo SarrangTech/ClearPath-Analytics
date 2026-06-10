@@ -14,8 +14,11 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from dotenv import load_dotenv
 
 warnings.filterwarnings("ignore")
+
+load_dotenv()
 
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -178,7 +181,8 @@ with st.sidebar:
          "🗺️ Network Map",
          "💥 Failure Simulation",
          "🔗 Gravity Corridors",
-         "🔍 Area Deep-Dive"],
+         "🔍 Area Deep-Dive",
+         "🔴 Neo4j Graph Explorer"],
         label_visibility="collapsed",
     )
 
@@ -780,3 +784,222 @@ elif page == "🔍 Area Deep-Dive":
                 if not area_detail.empty:
                     st.subheader("Most Impacted Routes")
                     st.dataframe(area_detail.head(20), width="stretch", height=280)
+
+
+# =============================================================================
+# PAGE 6 — NEO4J GRAPH EXPLORER
+# =============================================================================
+elif page == "🔴 Neo4j Graph Explorer":
+    st.title("🔴 Neo4j Graph Explorer")
+    st.caption(
+        "Run Cypher queries against the live Neo4j graph database. "
+        "Make sure Neo4j Desktop is running before using this page."
+    )
+
+    # -- Connection --
+    neo4j_uri  = os.getenv("NEO4J_URI",      "bolt://localhost:7687")
+    neo4j_user = os.getenv("NEO4J_USER",     "neo4j")
+    neo4j_pass = os.getenv("NEO4J_PASSWORD", "")
+
+    # Try to import neo4j driver
+    try:
+        from neo4j import GraphDatabase as _GDB
+
+        @st.cache_resource
+        def get_neo4j_driver():
+            driver = _GDB.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
+            driver.verify_connectivity()
+            return driver
+
+        driver = get_neo4j_driver()
+        st.success("✅ Connected to Neo4j")
+
+    except ImportError:
+        st.error("neo4j package not installed. Run: pip install neo4j")
+        st.stop()
+    except Exception as e:
+        st.error(f"❌ Could not connect to Neo4j: {e}")
+        st.warning("Make sure Neo4j Desktop is running and your .env password is correct.")
+        st.stop()
+
+    # -- Helper to run query --
+    def run_query(cypher):
+        with driver.session() as session:
+            result = session.run(cypher)
+            return result.data()
+
+    st.divider()
+
+    # -- Pre-built queries --
+    st.subheader("⚡ Quick Queries")
+    col1, col2, col3 = st.columns(3)
+
+    PRESET_QUERIES = {
+        "🔴 All HIGH-tier nodes": "MATCH (n:CFSArea {risk_tier: 'HIGH'}) RETURN n.name AS Area, n.vulnerability_score AS Score, n.val AS Value, n.ton AS Tonnage ORDER BY n.vulnerability_score DESC",
+        "🟠 All MEDIUM-tier nodes": "MATCH (n:CFSArea {risk_tier: 'MEDIUM'}) RETURN n.name AS Area, n.vulnerability_score AS Score, n.val AS Value ORDER BY n.vulnerability_score DESC",
+        "🔗 Top 10 gravity corridors": "MATCH (a:CFSArea)-[r:CORRIDOR]-(b:CFSArea) WHERE r.gravity_norm > 0 RETURN a.name AS Origin, b.name AS Destination, r.distance_miles AS Distance, r.gravity_norm AS Gravity ORDER BY r.gravity_norm DESC LIMIT 10",
+        "🏙️ Most vulnerable metros": "MATCH (n:CFSArea {is_metro: 1}) RETURN n.name AS Area, n.vulnerability_score AS Score, n.risk_tier AS Tier ORDER BY n.vulnerability_score DESC LIMIT 10",
+        "⚓ Closest to seaports": "MATCH (n:CFSArea) RETURN n.name AS Area, n.nearest_seaport AS Seaport, n.nearest_seaport_miles AS Miles ORDER BY n.nearest_seaport_miles ASC LIMIT 10",
+        "🔢 Most connected HIGH nodes": "MATCH (a:CFSArea {risk_tier: 'HIGH'})-[r:CORRIDOR]-() RETURN a.name AS Area, count(r) AS Connections ORDER BY Connections DESC",
+    }
+
+    selected_preset = st.selectbox(
+        "Select a pre-built query",
+        list(PRESET_QUERIES.keys()),
+    )
+
+    if st.button("▶ Run Query", type="primary"):
+        with st.spinner("Running query …"):
+            try:
+                data = run_query(PRESET_QUERIES[selected_preset])
+                if data:
+                    st.dataframe(pd.DataFrame(data), width="stretch", height=320)
+                else:
+                    st.info("No results returned.")
+            except Exception as e:
+                st.error(f"Query error: {e}")
+
+    st.divider()
+
+    # -- Neighbour explorer --
+    st.subheader("🗺️ Explore Neighbours of Any City")
+    city_input = st.text_input("Type a city name (partial match works)", "Los Angeles")
+
+    if st.button("▶ Show Neighbours"):
+        with st.spinner("Querying …"):
+            try:
+                cypher = f"""
+                    MATCH (a:CFSArea)-[r:CORRIDOR]-(b:CFSArea)
+                    WHERE a.name CONTAINS '{city_input}'
+                    RETURN a.name AS Origin, b.name AS Neighbour,
+                           r.distance_miles AS Distance_Miles,
+                           r.gravity_norm AS Gravity_Norm
+                    ORDER BY r.distance_miles ASC
+                """
+                data = run_query(cypher)
+                if data:
+                    df = pd.DataFrame(data)
+                    st.success(f"Found {len(df)} neighbours")
+                    st.dataframe(df, width="stretch", height=300)
+
+                    # Bar chart of neighbours by distance
+                    fig_nb = px.bar(
+                        df.sort_values("Distance_Miles"),
+                        x="Distance_Miles",
+                        y="Neighbour",
+                        orientation="h",
+                        color="Gravity_Norm",
+                        color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
+                        labels={"Distance_Miles": "Distance (miles)",
+                                "Neighbour": "", "Gravity_Norm": "Gravity"},
+                        title=f"Neighbours of {city_input} by Distance",
+                    )
+                    fig_nb.update_layout(
+                        template="plotly_dark", height=380,
+                        coloraxis_showscale=True,
+                        margin=dict(l=10, r=10, t=40, b=10),
+                    )
+                    st.plotly_chart(fig_nb, width="stretch")
+                else:
+                    st.warning(f"No city found matching '{city_input}'. Try a different name.")
+            except Exception as e:
+                st.error(f"Query error: {e}")
+
+    st.divider()
+
+    # -- Shortest path explorer --
+    st.subheader("🛣️ Shortest Path Between Two Cities")
+    col_a, col_b = st.columns(2)
+    with col_a:
+        city_a = st.text_input("Origin city", "Los Angeles")
+    with col_b:
+        city_b = st.text_input("Destination city", "New York")
+
+    if st.button("▶ Find Shortest Path"):
+        with st.spinner("Finding shortest path …"):
+            try:
+                cypher = f"""
+                    MATCH p = shortestPath(
+                        (a:CFSArea)-[:CORRIDOR*]-(b:CFSArea)
+                    )
+                    WHERE a.name CONTAINS '{city_a}'
+                    AND   b.name CONTAINS '{city_b}'
+                    RETURN [n IN nodes(p) | n.name] AS Path,
+                           length(p) AS Hops
+                """
+                data = run_query(cypher)
+                if data:
+                    path_nodes = data[0]["Path"]
+                    hops       = data[0]["Hops"]
+
+                    st.success(f"Shortest path found — **{hops} hops**")
+
+                    # Display path as steps
+                    st.markdown("**Route:**")
+                    path_str = " → ".join(
+                        [f"**{n}**" if i == 0 or i == len(path_nodes)-1
+                         else n for i, n in enumerate(path_nodes)]
+                    )
+                    st.markdown(path_str)
+
+                    # Table of path nodes with their properties
+                    path_cypher = f"""
+                        MATCH p = shortestPath(
+                            (a:CFSArea)-[:CORRIDOR*]-(b:CFSArea)
+                        )
+                        WHERE a.name CONTAINS '{city_a}'
+                        AND   b.name CONTAINS '{city_b}'
+                        UNWIND nodes(p) AS n
+                        RETURN n.name AS City, n.risk_tier AS Risk_Tier,
+                               n.vulnerability_score AS Vuln_Score,
+                               n.val AS Freight_Value
+                    """
+                    path_data = run_query(path_cypher)
+                    if path_data:
+                        path_df = pd.DataFrame(path_data)
+                        # colour rows by tier
+                        st.dataframe(path_df, width="stretch", height=280)
+
+                        # Visualise vulnerability along path
+                        fig_path = px.bar(
+                            path_df,
+                            x="City",
+                            y="Vuln_Score",
+                            color="Risk_Tier",
+                            color_discrete_map={"HIGH": "#d62728",
+                                                "MEDIUM": "#ff7f0e",
+                                                "LOW": "#6baed6"},
+                            title=f"Vulnerability Along Route: {city_a} → {city_b}",
+                            labels={"Vuln_Score": "Vulnerability Score", "City": ""},
+                        )
+                        fig_path.update_layout(
+                            template="plotly_dark", height=360,
+                            margin=dict(l=10, r=10, t=40, b=10),
+                            xaxis_tickangle=-30,
+                        )
+                        st.plotly_chart(fig_path, width="stretch")
+                else:
+                    st.warning("No path found. Check the city names and try again.")
+            except Exception as e:
+                st.error(f"Query error: {e}")
+
+    st.divider()
+
+    # -- Custom query --
+    st.subheader("✏️ Custom Cypher Query")
+    st.caption("Write your own Cypher query — results will be shown as a table.")
+    custom_query = st.text_area(
+        "Cypher query",
+        value="MATCH (n:CFSArea) RETURN n.name AS Area, n.risk_tier AS Tier, n.vulnerability_score AS Score ORDER BY n.vulnerability_score DESC LIMIT 20",
+        height=120,
+    )
+    if st.button("▶ Run Custom Query"):
+        with st.spinner("Running …"):
+            try:
+                data = run_query(custom_query)
+                if data:
+                    st.dataframe(pd.DataFrame(data), width="stretch", height=360)
+                else:
+                    st.info("No results returned.")
+            except Exception as e:
+                st.error(f"Query error: {e}")
