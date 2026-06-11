@@ -189,21 +189,21 @@ with st.sidebar:
 
     page = st.radio(
         "Navigate",
-        ["📊 Overview",
-         "🗺️ Network Map",
-         "💥 Failure Simulation",
-         "🔗 Gravity Corridors",
-         "🔍 Area Deep-Dive",
-         "📦 Commodity Risk"],
+        ["Overview",
+         "Network Map",
+         "Failure Simulation",
+         "Gravity Corridors",
+         "Area Deep-Dive",
+         "Commodity Risk"],
         label_visibility="collapsed",
     )
 
     st.divider()
-    st.markdown("**📦 Dataset**")
+    st.markdown("**Dataset**")
     st.caption("2022 US Census Commodity Flow Survey · 134 CFS Areas")
-    st.markdown("**🔬 Methodology**")
+    st.markdown("**Methodology**")
     st.caption("K=8 Nearest-Neighbour Graph · RF Classifier (90.3% LOOCV) · Dijkstra Rerouting")
-    st.markdown("**💵 Cost Assumption**")
+    st.markdown("**Cost Assumption**")
     st.caption("$0.08/ton-mile (BTS standard rate)")
     st.divider()
     st.caption("Use the menu above to explore the analysis.")
@@ -212,8 +212,8 @@ with st.sidebar:
 # =============================================================================
 # PAGE 1 — OVERVIEW
 # =============================================================================
-if page == "📊 Overview":
-    st.title("📊 Supply Chain Vulnerability Overview")
+if page == "Overview":
+    st.title("Supply Chain Vulnerability Overview")
     st.caption("134 CFS areas · 2022 US Census Commodity Flow Survey · RF Classifier risk tiers")
 
     # KPI row
@@ -337,8 +337,8 @@ if page == "📊 Overview":
 # =============================================================================
 # PAGE 2 — NETWORK MAP
 # =============================================================================
-elif page == "🗺️ Network Map":
-    st.title("🗺️ Freight Network Map")
+elif page == "Network Map":
+    st.title("Freight Network Map")
     st.caption("K=8 nearest-neighbour graph · 134 nodes · edges weighted by distance and gravity")
 
     col_ctrl1, col_ctrl2, col_ctrl3, col_ctrl4 = st.columns(4)
@@ -464,7 +464,7 @@ elif page == "🗺️ Network Map":
     col_i1.info(f"**{len(visible_nodes)}** nodes visible")
     col_i2.info(f"**{G.number_of_edges()}** K-NN edges total")
     col_i3.info("**Node size** ∝ vulnerability score")
-    col_i4.info("**🟢 Teal diamonds** = ports / intermodal hubs")
+    col_i4.info("**Teal diamonds** = ports / intermodal hubs")
 
     st.caption(
         "Edge color and thickness ∝ gravity score — blue=low gravity, orange=medium, red=high. "
@@ -475,8 +475,8 @@ elif page == "🗺️ Network Map":
 # =============================================================================
 # PAGE 3 — FAILURE SIMULATION
 # =============================================================================
-elif page == "💥 Failure Simulation":
-    st.title("💥 Failure Simulation Results")
+elif page == "Failure Simulation":
+    st.title("Failure Simulation Results")
     st.caption(
         "Each HIGH-tier area is removed from the K=8 NN graph. "
         "OD pairs that lose their shortest path are rerouted via Dijkstra. "
@@ -697,8 +697,8 @@ elif page == "💥 Failure Simulation":
 # =============================================================================
 # PAGE 4 — GRAVITY CORRIDORS
 # =============================================================================
-elif page == "🔗 Gravity Corridors":
-    st.title("🔗 Gravity-Weighted Corridor Analysis")
+elif page == "Gravity Corridors":
+    st.title("Gravity-Weighted Corridor Analysis")
     st.caption(
         "Gravity score = (VAL_origin × VAL_dest) / distance² — "
         "measures the economic energy of each freight corridor. "
@@ -853,8 +853,8 @@ elif page == "🔗 Gravity Corridors":
 # =============================================================================
 # PAGE 5 — AREA DEEP-DIVE
 # =============================================================================
-elif page == "🔍 Area Deep-Dive":
-    st.title("🔍 CFS Area Deep-Dive")
+elif page == "Area Deep-Dive":
+    st.title("CFS Area Deep-Dive")
     st.caption("Select any CFS area to explore its network position, corridors, commodity profile, and risk.")
 
     area_list = sorted(node_meta["short_name"].tolist())
@@ -1058,8 +1058,8 @@ elif page == "🔍 Area Deep-Dive":
 # =============================================================================
 # PAGE 6 — COMMODITY RISK
 # =============================================================================
-elif page == "📦 Commodity Risk":
-    st.title("📦 Commodity Risk Analysis")
+elif page == "Commodity Risk":
+    st.title("Commodity Risk Analysis")
     st.caption(
         "Breakdown of freight exposure by commodity type · hazardous materials · "
         "temperature-controlled freight · state-level export dependency"
