@@ -60,8 +60,7 @@ COST_PER_TON_MILE = 0.08    # BTS standard truck rate, $/ton-mile
 # BTS Freight Indicators — weekly data endpoint
 # Loaded import containers at U.S. ports (proxy for freight volume changes)
 BTS_INDICATOR_URL = (
-    "https://www.bts.gov/sites/bts.dot.gov/files/2024-10/"
-    "loaded_imports_at_us_ports.csv"
+    "https://data.bts.gov/api/views/y5ut-ibwt/rows.csv?accessType=DOWNLOAD"
 )
 
 # Paths
