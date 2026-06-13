@@ -153,12 +153,12 @@ def fetch_bts_indicators(demo_mode=False):
         # Map expected columns
         col_map = {}
         for c in df.columns:
-            if "port" in c or "area" in c or "name" in c:
-                col_map[c] = "port_name"
-            elif "week" in c or "date" in c or "period" in c:
-                col_map[c] = "week_ending"
-            elif "container" in c or "volume" in c or "count" in c or "value" in c:
-                col_map[c] = "container_volume"
+                if c == "indicator":
+        col_map[c] = "port_name"
+                elif c == "week_ending":
+        col_map[c] = "week_ending"
+                elif c == "container_volume":
+        col_map[c] = "container_volume"
         df = df.rename(columns=col_map)
 
         required = {"port_name", "week_ending", "container_volume"}
