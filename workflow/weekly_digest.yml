@@ -1,0 +1,40 @@
+name: ClearPath Weekly Freight Digest
+
+on:
+  schedule:
+    # Every Monday at 7:00 AM ET (12:00 UTC)
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+    # Allows manual trigger from GitHub UI (useful for demos)
+    inputs:
+      demo_mode:
+        description: 'Run in demo mode (inject synthetic disruption)?'
+        required: false
+        default: 'false'
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pandas numpy
+
+      - name: Run weekly digest
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+        run: |
+          if [ "${{ github.event.inputs.demo_mode }}" = "true" ]; then
+            python digest_runner.py --demo
+          else
+            python digest_runner.py
+          fi
