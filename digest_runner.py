@@ -153,11 +153,11 @@ def fetch_bts_indicators(demo_mode=False):
         # Map expected columns
         col_map = {}
         for c in df.columns:
-            if c == "indicator":
+            if c == "port_name" or c == "indicator":
                 col_map[c] = "port_name"
-            if c == "week_ending":
+            if c == "week_ending" or c == "date":
                 col_map[c] = "week_ending"
-            if c == "container_volume":
+            if c == "container_volume" or c == "value1":
                 col_map[c] = "container_volume"
         df = df.rename(columns=col_map)
 
