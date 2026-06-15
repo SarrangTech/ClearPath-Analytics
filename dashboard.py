@@ -539,13 +539,13 @@ elif page == "Failure Simulation":
             text="affected_od_pairs",
             title="Origin-Destination Pairs Forced to Reroute",
         )
-        fig_od.update_traces(textposition="outside")
+        fig_od.update_traces(textposition="outside", cliponaxis=False)
         fig_od.update_layout(
             template="plotly_dark",
             coloraxis_showscale=False,
             yaxis={"categoryorder": "total ascending"},
             height=500,
-            margin=dict(l=10, r=60, t=50, b=10),
+            margin=dict(l=10, r=100, t=50, b=10),
         )
         st.plotly_chart(fig_od, width="stretch")
 
@@ -562,9 +562,14 @@ elif page == "Failure Simulation":
         y="rerouting_cost_B",
         size="affected_od_pairs",
         size_max=40,
-        text="failed_area",
         color="rerouting_cost_B",
         color_continuous_scale=["#4a90d9", "#ff7f0e", "#d62728"],
+        hover_name="failed_area",
+        hover_data={
+            "vuln_score": ":.3f",
+            "rerouting_cost_B": ":.2f",
+            "affected_od_pairs": True,
+        },
         labels={
             "vuln_score": "Vulnerability Score (RF Classifier)",
             "rerouting_cost_B": "Rerouting Cost ($B)",
@@ -572,11 +577,24 @@ elif page == "Failure Simulation":
         },
         title="Vulnerability Score vs Economic Disruption Cost — bubble size = OD pairs disrupted",
     )
-    fig_scatter.update_traces(textposition="top center", textfont_size=9)
+    # Annotate only the 3 key outliers with leader-line style annotations
+    for _, row in sim_df.nlargest(3, "rerouting_cost_B").iterrows():
+        short = row["failed_area"].split(",")[0][:22]
+        fig_scatter.add_annotation(
+            x=row["vuln_score"], y=row["rerouting_cost_B"],
+            text=f"<b>{short}</b>",
+            showarrow=True, arrowhead=0, arrowwidth=1,
+            arrowcolor="rgba(255,255,255,0.4)",
+            ax=45, ay=-30,
+            font=dict(size=11, color="white"),
+            bgcolor="rgba(30,33,48,0.75)",
+            bordercolor="rgba(255,255,255,0.2)",
+            borderwidth=1, borderpad=4,
+        )
     fig_scatter.update_layout(
-        template="plotly_dark", height=440,
+        template="plotly_dark", height=480,
         coloraxis_showscale=False,
-        margin=dict(l=10, r=10, t=50, b=10),
+        margin=dict(l=10, r=20, t=50, b=10),
     )
     st.plotly_chart(fig_scatter, width="stretch")
 
@@ -1102,9 +1120,23 @@ elif page == "Commodity Risk":
             ].copy()
             comm_agg = cfs_only.groupby("COMM_LABEL")[["VAL", "TON"]].sum().reset_index()
             top_by_val = comm_agg.nlargest(20, "VAL").copy()
-            top_by_val["COMM_SHORT"] = top_by_val["COMM_LABEL"].str[:45]
+            def _trunc_unique(series, n=28):
+                def _t(s):
+                    return s if len(s) <= n else s[:n].rsplit(" ", 1)[0] + "…"
+                truncated = series.apply(_t).tolist()
+                seen = {}
+                result = []
+                for t in truncated:
+                    if t in seen:
+                        seen[t] += 1
+                        result.append(f"{t} ({seen[t]})")
+                    else:
+                        seen[t] = 1
+                        result.append(t)
+                return result
+            top_by_val["COMM_SHORT"] = _trunc_unique(top_by_val["COMM_LABEL"])
             top_by_ton = comm_agg.nlargest(20, "TON").copy()
-            top_by_ton["COMM_SHORT"] = top_by_ton["COMM_LABEL"].str[:45]
+            top_by_ton["COMM_SHORT"] = _trunc_unique(top_by_ton["COMM_LABEL"])
 
             col_l, col_r = st.columns(2)
             with col_l:
